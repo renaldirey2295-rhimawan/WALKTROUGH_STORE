@@ -256,7 +256,7 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
       <div class="actions" style="margin-top:13px">
         <button class="btn btn-blue" onclick="addFinding()">＋ Tambah Temuan</button>
         <button class="btn btn-orange" onclick="openFindingsPreview()">👁 Preview Temuan</button>
-        <button class="btn btn-green" onclick="finishReport()">✓ Selesai</button>
+        <button class="btn btn-green" onclick="finishReport()">✓ Selesai</button><button class="btn btn-blue" onclick="syncActiveWalkthrough()">☁ Sync WT AM</button>
         <button class="btn btn-light" onclick="saveAndHome()">Simpan & Keluar</button>
       </div>
     </div>
@@ -312,6 +312,177 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 <div id="toast" class="toast"></div>
 
 <script>
+
+/* ===== WT AM DATABASE SYNC =====
+   Set this to the deployed WT AM Backend Web App URL.
+*/
+const WT_AM_API_URL = 'https://script.google.com/macros/s/AKfycbynW54Eknu6qCi77Z-tRZdF26Pa3xfpylqbtd1fmFAUcvK-pxPq4fP2I57CkM7l5jhuKg/exec';
+
+async function syncWalkthroughToWTAM(report){
+  if(!report || report.status!=='SELESAI') return {success:false,message:'Walkthrough belum selesai.'};
+  if(!WT_AM_API_URL || WT_AM_API_URL.includes('PASTE_')){
+    return {success:false,message:'URL backend WT AM belum diisi.'};
+  }
+
+  const findings = Array.isArray(report.findings) ? report.findings : [];
+  if(!findings.length) return {success:false,message:'Tidak ada temuan.'};
+
+  const results=[];
+
+  for(const f of findings){
+    try{
+      let json;
+
+      /* =====================================================
+         1. TEMUAN BARU
+         - FOTO TEMUAN -> FOTO BEFORE
+         - Data temuan disimpan ke WALKTHROUGH DATABASE
+      ===================================================== */
+      if(!f.dbId){
+        const payload={
+          action:'saveWalkthrough',
+          role:'AM',
+          tanggal:report.date,
+          store:report.store,
+          area:report.area,
+          kategori:f.kategori || '',
+          temuan:f.desc || '',
+          prioritas:f.prioritas || 'MEDIUM',
+          actionPlan:f.actionPlan || '',
+          pic:f.pic || '',
+          dueDate:f.dueDate || '',
+          status:'OPEN',
+          keterangan:f.resultDesc || '',
+          fotoBefore:f.photo || '',
+          mimeTypeBefore:'image/jpeg',
+          inputBy:'WALKTHROUGH GITHUB'
+        };
+
+        const res=await fetch(WT_AM_API_URL,{
+          method:'POST',
+          headers:{'Content-Type':'text/plain;charset=utf-8'},
+          body:JSON.stringify(payload)
+        });
+        json=await res.json();
+
+        if(json && json.id){
+          f.dbId=json.id;
+          f.dbFotoBefore=json.fotoBefore || '';
+        }
+
+        /* =====================================================
+           2. FOTO HASIL -> FOTO AFTER
+           Backend updateWalkthrough akan menyimpan foto hasil
+           ke kolom FOTO AFTER di WALKTHROUGH DATABASE.
+        ===================================================== */
+        if(json && json.success && json.id && f.resultPhoto){
+          const updatePayload={
+            action:'updateWalkthrough',
+            role:'AM',
+            id:json.id,
+            status:'COMPLETED',
+            keterangan:f.resultDesc || '',
+            tindakan:f.resultDesc || '',
+            fotoAfter:f.resultPhoto,
+            mimeTypeAfter:'image/jpeg',
+            tanggalSelesai:report.date,
+            updateBy:'WALKTHROUGH GITHUB'
+          };
+
+          const updateRes=await fetch(WT_AM_API_URL,{
+            method:'POST',
+            headers:{'Content-Type':'text/plain;charset=utf-8'},
+            body:JSON.stringify(updatePayload)
+          });
+          const updateJson=await updateRes.json();
+
+          if(updateJson && updateJson.success){
+            json.fotoAfter=updateJson.fotoAfter || '';
+            json.status=updateJson.status || 'COMPLETED';
+          }else{
+            json.success=false;
+            json.message=(json.message||'Data temuan tersimpan, tetapi foto hasil gagal disimpan.')+' '+(updateJson && updateJson.message ? updateJson.message : '');
+          }
+        }else if(json && json.success && json.id){
+          /* Tidak ada foto hasil, tetap tandai selesai agar status database sesuai laporan. */
+          const updatePayload={
+            action:'updateWalkthrough',
+            role:'AM',
+            id:json.id,
+            status:'COMPLETED',
+            keterangan:f.resultDesc || '',
+            tindakan:f.resultDesc || '',
+            tanggalSelesai:report.date,
+            updateBy:'WALKTHROUGH GITHUB'
+          };
+
+          const updateRes=await fetch(WT_AM_API_URL,{
+            method:'POST',
+            headers:{'Content-Type':'text/plain;charset=utf-8'},
+            body:JSON.stringify(updatePayload)
+          });
+          const updateJson=await updateRes.json();
+          if(updateJson && updateJson.success){
+            json.status=updateJson.status || 'COMPLETED';
+          }
+        }
+      }else{
+        /* =====================================================
+           3. TEMUAN YANG SUDAH PERNAH SYNC
+           Gunakan UPDATE, bukan SAVE, agar tidak membuat duplikat.
+        ===================================================== */
+        const updatePayload={
+          action:'updateWalkthrough',
+          role:'AM',
+          id:f.dbId,
+          status:'COMPLETED',
+          keterangan:f.resultDesc || '',
+          tindakan:f.resultDesc || '',
+          tanggalSelesai:report.date,
+          updateBy:'WALKTHROUGH GITHUB'
+        };
+
+        /* Jika foto hasil masih tersedia di browser, upload/update ke FOTO AFTER. */
+        if(f.resultPhoto){
+          updatePayload.fotoAfter=f.resultPhoto;
+          updatePayload.mimeTypeAfter='image/jpeg';
+        }
+
+        const res=await fetch(WT_AM_API_URL,{
+          method:'POST',
+          headers:{'Content-Type':'text/plain;charset=utf-8'},
+          body:JSON.stringify(updatePayload)
+        });
+        json=await res.json();
+      }
+
+      results.push(json || {success:false,message:'Response backend kosong.'});
+    }catch(err){
+      results.push({success:false,message:err.message});
+    }
+  }
+
+  const ok=results.filter(x=>x && x.success).length;
+  if(ok===findings.length){
+    report.syncedToWTAM=true;
+    report.syncedAt=new Date().toISOString();
+    persist();
+    return {success:true,message:`${ok} temuan + foto berhasil dikirim ke WT AM.`};
+  }
+
+  return {success:false,message:`${ok}/${findings.length} temuan berhasil dikirim ke WT AM. Cek kembali foto/data yang gagal.`,results};
+}
+
+
+async function syncActiveWalkthrough(){
+  if(!active) return toast('Tidak ada walkthrough aktif');
+  if(active.status!=='SELESAI') return toast('Selesaikan walkthrough terlebih dahulu');
+  toast('Mengirim temuan ke WT AM...');
+  const r=await syncWalkthroughToWTAM(active);
+  toast(r.message || 'Proses sinkronisasi selesai');
+  renderEditor();
+}
+
 const KEY='WALKTHROUGH_CONTROL_V1';
 let reports=loadReports();
 let active=null;
@@ -382,7 +553,7 @@ function openEditor(){
 }
 function renderEditor(){
  if(!active)return;
- document.getElementById('editorInfo').textContent=`${active.store} • ${active.area} • ${formatDate(active.date)} • ${active.findings.length} temuan`;
+ document.getElementById('editorInfo').textContent=`${active.store} • ${active.area} • ${formatDate(active.date)} • ${active.findings.length} temuan${active.syncedToWTAM?' • ✓ SYNC WT AM':''}`;
  const badge=document.getElementById('editorBadge');
  badge.textContent=active.status;
  badge.className='badge '+(active.status==='SELESAI'?'badge-done':'badge-draft');
