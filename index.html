@@ -313,164 +313,103 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 
 <script>
 
-/* ===== WT AM DATABASE SYNC =====
+/* ===== WT AM DATABASE SYNC - V5 BEFORE ONLY =====
    Set this to the deployed WT AM Backend Web App URL.
 */
 const WT_AM_API_URL = 'https://script.google.com/macros/s/AKfycbynW54Eknu6qCi77Z-tRZdF26Pa3xfpylqbtd1fmFAUcvK-pxPq4fP2I57CkM7l5jhuKg/exec';
 
 async function syncWalkthroughToWTAM(report){
-  if(!report || report.status!=='SELESAI') return {success:false,message:'Walkthrough belum selesai.'};
+  if(!report || report.status!=='SELESAI'){
+    return {success:false,message:'Walkthrough belum selesai.'};
+  }
+
   if(!WT_AM_API_URL || WT_AM_API_URL.includes('PASTE_')){
     return {success:false,message:'URL backend WT AM belum diisi.'};
   }
 
   const findings = Array.isArray(report.findings) ? report.findings : [];
-  if(!findings.length) return {success:false,message:'Tidak ada temuan.'};
+  if(!findings.length){
+    return {success:false,message:'Tidak ada temuan.'};
+  }
 
   const results=[];
 
   for(const f of findings){
     try{
-      let json;
-
-      /* =====================================================
-         1. TEMUAN BARU
-         - FOTO TEMUAN -> FOTO BEFORE
-         - Data temuan disimpan ke WALKTHROUGH DATABASE
-      ===================================================== */
-      if(!f.dbId){
-        const payload={
-          action:'saveWalkthrough',
-          role:'AM',
-          tanggal:report.date,
-          store:report.store,
-          area:report.area,
-          kategori:f.kategori || '',
-          temuan:f.desc || '',
-          prioritas:f.prioritas || 'MEDIUM',
-          actionPlan:f.actionPlan || '',
-          pic:f.pic || '',
-          dueDate:f.dueDate || '',
-          status:'OPEN',
-          keterangan:f.resultDesc || '',
-          fotoBefore:f.photo || '',
-          mimeTypeBefore:'image/jpeg',
-          inputBy:'WALKTHROUGH GITHUB'
-        };
-
-        const res=await fetch(WT_AM_API_URL,{
-          method:'POST',
-          headers:{'Content-Type':'text/plain;charset=utf-8'},
-          body:JSON.stringify(payload)
-        });
-        json=await res.json();
-
-        if(json && json.id){
-          f.dbId=json.id;
-          f.dbFotoBefore=json.fotoBefore || '';
-        }
-
-        /* =====================================================
-           2. FOTO HASIL -> FOTO AFTER
-           Backend updateWalkthrough akan menyimpan foto hasil
-           ke kolom FOTO AFTER di WALKTHROUGH DATABASE.
-        ===================================================== */
-        if(json && json.success && json.id && f.resultPhoto){
-          const updatePayload={
-            action:'updateWalkthrough',
-            role:'AM',
-            id:json.id,
-            status:'COMPLETED',
-            keterangan:f.resultDesc || '',
-            tindakan:f.resultDesc || '',
-            fotoAfter:f.resultPhoto,
-            mimeTypeAfter:'image/jpeg',
-            tanggalSelesai:report.date,
-            updateBy:'WALKTHROUGH GITHUB'
-          };
-
-          const updateRes=await fetch(WT_AM_API_URL,{
-            method:'POST',
-            headers:{'Content-Type':'text/plain;charset=utf-8'},
-            body:JSON.stringify(updatePayload)
-          });
-          const updateJson=await updateRes.json();
-
-          if(updateJson && updateJson.success){
-            json.fotoAfter=updateJson.fotoAfter || '';
-            json.status=updateJson.status || 'COMPLETED';
-          }else{
-            json.success=false;
-            json.message=(json.message||'Data temuan tersimpan, tetapi foto hasil gagal disimpan.')+' '+(updateJson && updateJson.message ? updateJson.message : '');
-          }
-        }else if(json && json.success && json.id){
-          /* Tidak ada foto hasil, tetap tandai selesai agar status database sesuai laporan. */
-          const updatePayload={
-            action:'updateWalkthrough',
-            role:'AM',
-            id:json.id,
-            status:'COMPLETED',
-            keterangan:f.resultDesc || '',
-            tindakan:f.resultDesc || '',
-            tanggalSelesai:report.date,
-            updateBy:'WALKTHROUGH GITHUB'
-          };
-
-          const updateRes=await fetch(WT_AM_API_URL,{
-            method:'POST',
-            headers:{'Content-Type':'text/plain;charset=utf-8'},
-            body:JSON.stringify(updatePayload)
-          });
-          const updateJson=await updateRes.json();
-          if(updateJson && updateJson.success){
-            json.status=updateJson.status || 'COMPLETED';
-          }
-        }
-      }else{
-        /* =====================================================
-           3. TEMUAN YANG SUDAH PERNAH SYNC
-           Gunakan UPDATE, bukan SAVE, agar tidak membuat duplikat.
-        ===================================================== */
-        const updatePayload={
-          action:'updateWalkthrough',
-          role:'AM',
+      /* Temuan yang sudah memiliki dbId tidak dikirim ulang,
+         agar tidak membuat data duplikat. */
+      if(f.dbId){
+        results.push({
+          success:true,
           id:f.dbId,
-          status:'COMPLETED',
-          keterangan:f.resultDesc || '',
-          tindakan:f.resultDesc || '',
-          tanggalSelesai:report.date,
-          updateBy:'WALKTHROUGH GITHUB'
-        };
-
-        /* Jika foto hasil masih tersedia di browser, upload/update ke FOTO AFTER. */
-        if(f.resultPhoto){
-          updatePayload.fotoAfter=f.resultPhoto;
-          updatePayload.mimeTypeAfter='image/jpeg';
-        }
-
-        const res=await fetch(WT_AM_API_URL,{
-          method:'POST',
-          headers:{'Content-Type':'text/plain;charset=utf-8'},
-          body:JSON.stringify(updatePayload)
+          message:'Temuan sudah pernah tersinkron.'
         });
-        json=await res.json();
+        continue;
       }
 
-      results.push(json || {success:false,message:'Response backend kosong.'});
+      const payload={
+        action:'saveWalkthrough',
+        role:'AM',
+        tanggal:report.date,
+        store:report.store,
+        area:report.area,
+        kategori:f.kategori || '',
+        temuan:f.desc || '',
+        prioritas:f.prioritas || 'MEDIUM',
+        actionPlan:f.actionPlan || '',
+        pic:f.pic || '',
+        dueDate:f.dueDate || '',
+        status:'OPEN',
+        keterangan:f.resultDesc || '',
+        fotoBefore:f.photo || '',
+        mimeTypeBefore:'image/jpeg',
+        inputBy:'WALKTHROUGH GITHUB'
+      };
+
+      const res=await fetch(WT_AM_API_URL,{
+        method:'POST',
+        headers:{'Content-Type':'text/plain;charset=utf-8'},
+        body:JSON.stringify(payload)
+      });
+
+      const json=await res.json();
+
+      if(json && json.id){
+        f.dbId=json.id;
+        f.dbFotoBefore=json.fotoBefore || '';
+      }
+
+      results.push(json || {
+        success:false,
+        message:'Response backend kosong.'
+      });
+
     }catch(err){
-      results.push({success:false,message:err.message});
+      results.push({
+        success:false,
+        message:err.message || 'Gagal mengirim data.'
+      });
     }
   }
 
   const ok=results.filter(x=>x && x.success).length;
+
   if(ok===findings.length){
     report.syncedToWTAM=true;
     report.syncedAt=new Date().toISOString();
     persist();
-    return {success:true,message:`${ok} temuan + foto berhasil dikirim ke WT AM.`};
+
+    return {
+      success:true,
+      message:`${ok} temuan + foto before berhasil dikirim ke WT AM.`
+    };
   }
 
-  return {success:false,message:`${ok}/${findings.length} temuan berhasil dikirim ke WT AM. Cek kembali foto/data yang gagal.`,results};
+  return {
+    success:false,
+    message:`${ok}/${findings.length} temuan berhasil dikirim ke WT AM. Cek koneksi backend/deployment.`,
+    results
+  };
 }
 
 
@@ -590,16 +529,9 @@ function renderEditor(){
      </div>
    </div>
 
-   <div class="finding-divider"><span>HASIL / PERBAIKAN</span></div>
+   <div class="finding-divider"><span>HASIL / TINDAKAN</span></div>
 
-   <div class="finding-input-grid">
-     <div class="input-photo-panel">
-       <div class="photo-label">📷 FOTO HASIL</div>
-       ${f.resultPhoto ? `<div class="editable-photo"><img src="${f.resultPhoto}" alt="Foto hasil"><button class="photo-delete" onclick="clearFindingPhoto('${f.id}','result')">✕</button></div>`
-                 : `<button class="photo-upload-box result-photo-box" onclick="chooseFindingPhoto('${f.id}','result')"><span>📷</span><b>Tambah Foto Hasil</b><small>Ambil setelah perbaikan</small></button>`}
-       <input id="result-file-${f.id}" type="file" accept="image/*" capture="environment" class="hidden" onchange="handleFindingPhoto('${f.id}','result',this)">
-     </div>
-
+   <div class="finding-input-grid single-result">
      <div class="input-text-panel">
        <label>KETERANGAN HASIL / TINDAKAN</label>
        <textarea placeholder="Tuliskan tindakan atau hasil perbaikan..." oninput="updateFindingText('${f.id}','resultDesc',this.value)">${esc(f.resultDesc||'')}</textarea>
@@ -618,7 +550,6 @@ function addFinding(){
   active.findings.push({
     id: uid(),
     photo: null,
-    resultPhoto: null,
     desc: '',
     resultDesc: '',
     updatedAt: new Date().toISOString()
@@ -700,17 +631,12 @@ function resizeImage(file, maxW=1000, quality=.72){
   });
 }
 
-function chooseFindingPhoto(id, type){
-  const input = document.getElementById(
-    type === 'finding'
-      ? `finding-file-${id}`
-      : `result-file-${id}`
-  );
-
+function chooseFindingPhoto(id, type='finding'){
+  const input = document.getElementById(`finding-file-${id}`);
   if(input) input.click();
 }
 
-function handleFindingPhoto(id, type, input){
+function handleFindingPhoto(id, type='finding', input){
   const file = input && input.files ? input.files[0] : null;
   if(!file) return;
 
@@ -720,12 +646,7 @@ function handleFindingPhoto(id, type, input){
     const f = active.findings.find(x => x.id === id);
     if(!f) return;
 
-    if(type === 'finding'){
-      f.photo = data;
-    }else{
-      f.resultPhoto = data;
-    }
-
+    f.photo = data;
     f.updatedAt = new Date().toISOString();
 
     syncActive();
@@ -737,29 +658,25 @@ function handleFindingPhoto(id, type, input){
       if(el) el.scrollIntoView({behavior:'smooth', block:'center'});
     }, 80);
 
-    toast(type === 'finding' ? 'Foto temuan tersimpan' : 'Foto hasil tersimpan');
+    toast('Foto temuan tersimpan');
   }).catch(()=>{
     toast('Foto gagal diproses');
   });
 }
 
-function clearFindingPhoto(id, type){
+function clearFindingPhoto(id, type='finding'){
   if(!active) return;
 
   const f = active.findings.find(x => x.id === id);
   if(!f) return;
 
-  if(type === 'finding'){
-    f.photo = null;
-  }else{
-    f.resultPhoto = null;
-  }
-
+  f.photo = null;
   f.updatedAt = new Date().toISOString();
+
   syncActive();
   persist();
   renderEditor();
-  toast('Foto dihapus');
+  toast('Foto temuan dihapus');
 }
 
 function syncActive(){
@@ -841,13 +758,6 @@ function openFindingsPreview(){
               ? `<img src="${f.photo}" alt="Foto temuan">`
               : `<div class="preview-no-photo">📷 Belum ada foto</div>`}
           </div>
-
-          <div>
-            <div class="preview-label">FOTO HASIL</div>
-            ${f.resultPhoto
-              ? `<img src="${f.resultPhoto}" alt="Foto hasil">`
-              : `<div class="preview-no-photo result-empty">📷 Belum ada foto hasil</div>`}
-          </div>
         </div>
 
         <div class="preview-text-grid">
@@ -883,8 +793,7 @@ function buildWordHTML(r){
    </table>
    <table class="word-two-col word-result-table">
     <tr>
-     <td class="word-photo-cell">${f.resultPhoto?`<img src="${f.resultPhoto}" alt="Foto hasil">`:'<span>Tidak ada foto hasil</span>'}</td>
-     <td class="word-text-cell"><b>KETERANGAN HASIL / TINDAKAN</b><div>${esc(f.resultDesc||'-')}</div></td>
+     <td class="word-text-cell" colspan="2"><b>KETERANGAN HASIL / TINDAKAN</b><div>${esc(f.resultDesc||'-')}</div></td>
     </tr>
    </table>
   </div>`).join('');
@@ -929,10 +838,9 @@ function downloadWord(r){
     <td class="photo"><div class="photo-caption">FOTO TEMUAN</div>${f.photo?`<img src="${f.photo}" width="240" style="max-width:240px;max-height:190px;">`:'<div class="no-photo">Tidak ada foto</div>'}</td>
     <td class="txt"><b>KETERANGAN TEMUAN</b><br><div>${esc(f.desc||'-')}</div></td>
    </tr>
-   <tr><td colspan="2" class="sectionbar">HASIL / PERBAIKAN</td></tr>
+   <tr><td colspan="2" class="sectionbar">HASIL / TINDAKAN</td></tr>
    <tr>
-    <td class="photo"><div class="photo-caption">FOTO HASIL</div>${f.resultPhoto?`<img src="${f.resultPhoto}" width="240" style="max-width:240px;max-height:190px;">`:'<div class="no-photo">Tidak ada foto hasil</div>'}</td>
-    <td class="txt"><b>KETERANGAN HASIL / TINDAKAN</b><br><div>${esc(f.resultDesc||'-')}</div></td>
+    <td class="txt" colspan="2"><b>KETERANGAN HASIL / TINDAKAN</b><br><div>${esc(f.resultDesc||'-')}</div></td>
    </tr>
   </table>`).join('');
 
