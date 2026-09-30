@@ -1,1 +1,821 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<title>WT AM Area Renaldi - Walkthrough Control</title>
+<style>
+:root{
+  --bg:#f3f4f6;--card:#fff;--text:#111827;--muted:#6b7280;--line:#e5e7eb;
+  --primary:#111827;--blue:#2563eb;--green:#16a34a;--red:#dc2626;--orange:#ea580c;
+  --shadow:0 8px 24px rgba(0,0,0,.07);--radius:18px
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.app{max-width:900px;margin:auto;padding-bottom:40px}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(17,24,39,.97);color:#fff;padding:15px 16px;box-shadow:0 3px 14px rgba(0,0,0,.18)}
+.topbar-inner{max-width:900px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.brand{font-size:19px;font-weight:800}.brand small{display:block;font-size:11px;font-weight:500;opacity:.65;margin-top:2px}
+.top-actions{display:flex;gap:7px}
+.icon-btn{border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#fff;border-radius:11px;padding:9px 11px}
+main{padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:17px;margin-bottom:15px}
+.hero{background:linear-gradient(135deg,#111827,#374151);color:#fff;border:0}
+.hero h1{margin:0 0 6px;font-size:25px}.hero p{margin:0;color:#d1d5db;font-size:13px;line-height:1.5}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.field{margin-bottom:13px}.field:last-child{margin-bottom:0}
+label{display:block;font-size:12px;font-weight:800;margin-bottom:7px;color:#374151;text-transform:uppercase;letter-spacing:.3px}
+input,select,textarea{width:100%;border:1px solid #d1d5db;border-radius:12px;background:#fff;padding:12px;color:var(--text);outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+textarea{min-height:105px;resize:vertical}
+.btn{border:0;border-radius:12px;padding:12px 15px;font-weight:800;transition:.15s}
+.btn:active{transform:scale(.98)}.btn-primary{background:var(--primary);color:#fff}.btn-blue{background:var(--blue);color:#fff}
+.btn-green{background:var(--green);color:#fff}.btn-red{background:#fee2e2;color:#991b1b}.btn-light{background:#f3f4f6;color:#111827;border:1px solid var(--line)}
+.btn-orange{background:var(--orange);color:#fff}
+.btn-full{width:100%}
+.actions{display:flex;gap:9px;flex-wrap:wrap}.actions .btn{flex:1;min-width:130px}
+.section-title{font-size:16px;font-weight:900;margin:0 0 12px}
+.muted{color:var(--muted);font-size:12px}
+.badge{display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:800}
+.badge-draft{background:#fef3c7;color:#92400e}.badge-done{background:#dcfce7;color:#166534}
+.report-head{border:1px solid var(--line);border-radius:14px;padding:15px;background:#fafafa;margin-bottom:12px}
+.report-head .title{text-align:center;font-weight:900;font-size:19px;margin-bottom:13px}
+.info-table{width:100%;border-collapse:collapse;font-size:13px}.info-table td{padding:6px 4px;border-bottom:1px solid var(--line)}
+.info-table td:first-child{font-weight:800;width:90px}
+.finding{border:1px solid var(--line);border-radius:15px;overflow:hidden;margin-bottom:13px;background:#fff}
+.finding-head{padding:11px 13px;background:#f9fafb;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.finding-title{font-weight:900}.finding-body{padding:13px}
+.photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.photo-box{border:1px dashed #cbd5e1;border-radius:12px;overflow:hidden;background:#f8fafc;min-height:130px;display:flex;align-items:center;justify-content:center;position:relative}
+.photo-box img{width:100%;height:220px;object-fit:cover;display:block}
+.photo-placeholder{text-align:center;color:#94a3b8;font-size:12px;padding:20px}
+.photo-label{font-size:11px;font-weight:900;color:#475569;margin-bottom:6px}
+.text-block{margin-top:11px}.text-block strong{font-size:11px;text-transform:uppercase;color:#64748b}.text-content{font-size:13px;line-height:1.55;margin-top:4px;white-space:pre-wrap}
+.finding-buttons{display:flex;gap:7px;margin-top:12px}.finding-buttons .btn{flex:1}
+.empty{text-align:center;padding:30px 15px;color:#9ca3af}
+.empty .emoji{font-size:34px;margin-bottom:8px}
+.hidden{display:none!important}
+.tabbar{display:flex;gap:7px;margin-bottom:14px}.tab{flex:1;padding:11px;border:1px solid var(--line);border-radius:11px;background:#fff;font-weight:800;color:#6b7280}.tab.active{background:#111827;color:#fff;border-color:#111827}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:13px}.stat{background:rgba(255,255,255,.1);border-radius:12px;padding:10px}.stat b{display:block;font-size:20px}.stat span{font-size:10px;color:#d1d5db}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);background:#111827;color:#fff;padding:12px 17px;border-radius:12px;font-size:13px;font-weight:700;opacity:0;pointer-events:none;transition:.25s;z-index:99;box-shadow:0 8px 25px rgba(0,0,0,.2)}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:50;display:flex;align-items:flex-end;justify-content:center;padding:0}
+.modal-card{background:#fff;width:min(900px,100%);max-height:94vh;overflow:auto;border-radius:22px 22px 0 0;padding:17px}
+.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.modal-head h2{margin:0;font-size:18px}
+.close{border:0;background:#f3f4f6;border-radius:10px;padding:8px 12px;font-weight:800}
+.preview-wrap{background:#e5e7eb;padding:10px}.word-page{background:#fff;padding:25px;max-width:820px;margin:auto}
+.word-page h1{text-align:center;font-size:22px;margin:0 0 5px}.word-page .subtitle{text-align:center;font-size:11px;color:#555;margin-bottom:16px}
+.word-info{border-collapse:collapse;width:100%;font-size:12px;margin-bottom:17px}.word-info td{border:1px solid #777;padding:6px}.word-info td:first-child{width:80px;font-weight:bold;background:#f2f2f2}
+.word-item{margin-bottom:17px;border:1px solid #777;page-break-inside:avoid}.word-item-title{font-weight:bold;background:#eee;padding:7px;border-bottom:1px solid #777;font-size:12px}
+.word-row{display:grid;grid-template-columns:40% 60%;min-height:145px}.word-photo{padding:7px;border-right:1px solid #777;display:flex;align-items:center;justify-content:center}.word-photo img{max-width:100%;max-height:180px;object-fit:contain}.word-text{padding:9px;font-size:11px;line-height:1.45;white-space:pre-wrap}
+.word-result{border-top:1px solid #777}.word-result .word-row{min-height:120px}
+.footer-note{text-align:center;font-size:10px;color:#777;margin-top:18px}
+@media(max-width:600px){
+ .grid,.photo-grid{grid-template-columns:1fr}.app main{padding:11px}.card{padding:14px}
+ .word-page{padding:14px}.word-row{grid-template-columns:45% 55%}
+}
+@media print{body{background:#fff}.topbar,main{display:none}.modal{position:static;background:none}.modal-card{max-height:none;padding:0}.preview-wrap{padding:0;background:#fff}}
+
+/* ===== WT AM AREA RENALDI COLORFUL THEME ===== */
+body{background:linear-gradient(180deg,#f8fafc 0%,#f1f5f9 100%)}
+.topbar{background:linear-gradient(110deg,#ef233c 0%,#d90429 38%,#5b21b6 72%,#075985 100%);padding:18px 16px;border:0}
+.brand{font-size:22px;letter-spacing:.2px}.brand span{color:#ffe66d}.brand small{font-size:10px;letter-spacing:2px;margin-top:5px}
+.hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#ef233c 0%,#c9184a 35%,#5b21b6 70%,#075985 100%);padding:21px}
+.hero:after{content:"";position:absolute;width:190px;height:190px;right:-75px;top:-85px;border-radius:50%;background:rgba(255,255,255,.11)}
+.hero h1{font-size:27px;position:relative;z-index:1}.hero p{max-width:620px;position:relative;z-index:1}
+.stat-grid{position:relative;z-index:1}
+.stat{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.13);backdrop-filter:blur(8px);padding:11px;border-radius:15px}
+.stat-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.23);font-size:21px;font-weight:900}
+.stat b{font-size:22px}.stat span{font-weight:900}.stat small{display:block;font-size:9px;color:#e5e7eb;margin-top:2px}
+.stat-blue .stat-icon{background:#bfdbfe;color:#1d4ed8}.stat-green .stat-icon{background:#bbf7d0;color:#15803d}.stat-pink .stat-icon{background:#fecdd3;color:#be123c}
+.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:13px}
+.quick{border:0;border-radius:18px;min-height:118px;padding:13px 9px;color:#fff;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 9px 20px rgba(0,0,0,.10)}
+.quick strong{font-size:28px;line-height:1;margin-bottom:8px}.quick b{font-size:15px;line-height:1.15}.quick small{margin-top:5px;opacity:.85;font-size:10px}
+.q-blue{background:linear-gradient(145deg,#1d4ed8,#075985)}.q-purple{background:linear-gradient(145deg,#7c3aed,#4c1d95)}.q-orange{background:linear-gradient(145deg,#f59e0b,#ea580c)}.q-green{background:linear-gradient(145deg,#10b981,#059669)}
+.tabbar{background:#fff;padding:4px;border-radius:14px;border:1px solid var(--line);box-shadow:0 4px 14px rgba(0,0,0,.04)}
+.tab{border:0}.tab.active{background:#111827}
+.info-card{border-top:4px solid #ef233c}
+.section-heading{display:flex;align-items:center;gap:11px;margin-bottom:16px}.section-icon{width:46px;height:46px;border-radius:14px;background:linear-gradient(145deg,#ff3b30,#e11d48);color:#fff;display:flex;align-items:center;justify-content:center;font-size:23px;box-shadow:0 7px 16px rgba(239,35,60,.25)}
+.section-heading .section-title{margin:0 0 3px}
+label{color:#334155}select{background:linear-gradient(90deg,#fff7f8,#fff);border-color:#f3c4cb}.btn-primary{background:linear-gradient(135deg,#ef233c,#e11d48);box-shadow:0 7px 16px rgba(239,35,60,.22)}
+.guide-card{background:linear-gradient(135deg,#ecfdf5,#eff6ff);border:1px solid #d1fae5;border-radius:18px;padding:17px;margin-bottom:15px}
+.guide-card h3{margin:0 0 14px;color:#047857}.guide-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.guide-grid>div{text-align:center;position:relative}.guide-grid i{display:inline-flex;width:25px;height:25px;border-radius:50%;background:#2563eb;color:#fff;align-items:center;justify-content:center;font-style:normal;font-weight:900;font-size:12px}.guide-grid>div:nth-child(2) i{background:#ef233c}.guide-grid>div:nth-child(3) i{background:#10b981}.guide-grid>div:nth-child(4) i{background:#f59e0b}.guide-grid b{display:block;font-size:22px;margin:6px}.guide-grid span{font-size:10px;color:#475569;line-height:1.35;display:block}.guide-note{margin-top:15px;padding:11px 12px;border:1px solid #fde68a;background:#fffbeb;border-radius:13px;color:#92400e;font-size:11px;line-height:1.5}
+@media(max-width:600px){.quick-grid{grid-template-columns:repeat(4,1fr);gap:7px}.quick{min-height:105px;border-radius:15px}.quick strong{font-size:23px}.quick b{font-size:12px}.quick small{font-size:9px}.guide-grid{gap:2px}.guide-grid span{font-size:9px}}
+
+
+
+button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.photo-upload-box{cursor:pointer}
+.small-btn{cursor:pointer}
+
+/* ===== FINDINGS PREVIEW ===== */
+.preview-finding{border:1px solid #dbe3ef;border-radius:15px;overflow:hidden;margin-bottom:13px;background:#fff}
+.preview-finding-head{display:flex;justify-content:space-between;gap:8px;padding:11px 13px;background:#f8fafc;border-bottom:1px solid #e5e7eb}
+.preview-finding-head span{font-size:10px;color:#64748b}
+.preview-photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:10px}
+.preview-label{font-size:9px;font-weight:900;color:#475569;margin-bottom:5px}
+.preview-photo-grid img,.preview-no-photo{width:100%;height:145px;object-fit:cover;border-radius:10px;background:#f8fafc}
+.preview-no-photo{display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:11px}
+.result-empty{background:#f0fdf4}
+.preview-text-grid{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #e5e7eb}
+.preview-text-grid>div{padding:10px;font-size:11px;line-height:1.45}
+.preview-text-grid>div+div{border-left:1px solid #e5e7eb}
+.preview-text-grid b{font-size:9px;text-transform:uppercase;color:#475569}
+.preview-text-grid p{white-space:pre-wrap;margin:5px 0 0;color:#111827}
+@media(max-width:600px){
+  .preview-photo-grid,.preview-text-grid{grid-template-columns:1fr}
+  .preview-text-grid>div+div{border-left:0;border-top:1px solid #e5e7eb}
+  .preview-photo-grid img,.preview-no-photo{height:175px}
+}
+/* ===== DYNAMIC FINDING CARDS ===== */
+.active-report-card{border-top:4px solid #2563eb}
+.inline-finding{padding:0;overflow:hidden}
+.inline-finding .finding-head{padding:14px 15px;background:linear-gradient(90deg,#eff6ff,#fff);border-bottom:1px solid #dbeafe}
+.small-btn{padding:8px 10px;font-size:11px;min-width:auto}
+.finding-input-grid{display:grid;grid-template-columns:38% 62%;gap:0}
+.input-photo-panel{padding:14px;border-right:1px solid var(--line)}
+.input-text-panel{padding:14px}
+.photo-upload-box{width:100%;min-height:170px;border:2px dashed #cbd5e1;border-radius:14px;background:#f8fafc;color:#475569;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+.photo-upload-box span{font-size:34px}.photo-upload-box b{font-size:13px}.photo-upload-box small{font-size:10px;color:#94a3b8}
+.result-photo-box{background:#f0fdf4;border-color:#bbf7d0}
+.editable-photo{position:relative;border-radius:14px;overflow:hidden;background:#f8fafc}
+.editable-photo img{display:block;width:100%;height:170px;object-fit:cover}
+.photo-delete{position:absolute;right:7px;top:7px;border:0;background:rgba(17,24,39,.8);color:#fff;border-radius:9px;width:30px;height:30px;font-weight:900}
+.input-text-panel textarea{min-height:170px}
+.finding-divider{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#f8fafc;padding:8px 14px;font-size:10px;font-weight:900;color:#475569}
+.add-more-card{background:linear-gradient(135deg,#eff6ff,#faf5ff);border:1px dashed #93c5fd}
+.report-doc .word-info{border-collapse:collapse;width:100%}
+.word-two-col{width:100%;border-collapse:collapse;table-layout:fixed}
+.word-photo-cell{width:40%;height:155px;border:1px solid #777;padding:7px;text-align:center;vertical-align:middle}
+.word-photo-cell img{max-width:100%;max-height:145px;object-fit:contain}
+.word-photo-cell span{color:#777;font-size:10px}
+.word-text-cell{width:60%;border:1px solid #777;padding:9px;vertical-align:top;font-size:11px;line-height:1.45;white-space:pre-wrap}
+.word-text-cell b{font-size:10px;display:block;margin-bottom:5px;color:#334155}
+.word-result-table{border-top:0}
+.report-count{font-size:11px;font-weight:900;margin:10px 0}
+@media(max-width:600px){
+ .finding-input-grid{grid-template-columns:1fr}
+ .input-photo-panel{border-right:0;border-bottom:1px solid var(--line)}
+ .input-text-panel textarea{min-height:115px}
+ .photo-upload-box,.editable-photo img{min-height:155px;height:155px}
+}
+
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">WT AM Area <span>Renaldi</span><small>WALKTHROUGH CONTROL</small></div>
+    <div class="top-actions">
+      <button class="icon-btn" onclick="showHistory()">📁 Draft</button>
+    </div>
+  </div>
+</div>
+
+<div class="app">
+<main>
+  <section id="homeView">
+    <div class="card hero">
+      <h1>Walkthrough Store</h1>
+      <p>Buat laporan temuan, simpan sebagai draft, lengkapi hasil perbaikan, lalu export menjadi laporan Word.</p>
+      <div class="stat-grid">
+        <div class="stat stat-blue"><div class="stat-icon">📋</div><div><b id="statDraft">0</b><span>DRAFT</span><small>Belum diselesaikan</small></div></div>
+        <div class="stat stat-green"><div class="stat-icon">✓</div><div><b id="statDone">0</b><span>SELESAI</span><small>Sudah dikumpulkan</small></div></div>
+        <div class="stat stat-pink"><div class="stat-icon">!</div><div><b id="statFindings">0</b><span>TEMUAN</span><small>Total temuan</small></div></div>
+      </div>
+    </div>
+
+    <div class="quick-grid">
+      <button class="quick q-blue" onclick="switchTab('new');window.scrollTo({top:0,behavior:'smooth'})"><strong>＋</strong><b>Walkthrough<br>Baru</b><small>Mulai inspeksi</small></button>
+      <button class="quick q-purple" onclick="switchTab('history');window.scrollTo({top:0,behavior:'smooth'})"><strong>📂</strong><b>Draft</b><small>Lanjutkan</small></button>
+      <button class="quick q-orange" onclick="switchTab('history');window.scrollTo({top:0,behavior:'smooth'})"><strong>◷</strong><b>Riwayat</b><small>Laporan</small></button>
+      <button class="quick q-green" onclick="exportLatest()"><strong>▥</strong><b>Export</b><small>ke Word</small></button>
+    </div>
+    <div class="tabbar">
+      <button class="tab active" id="tabNew" onclick="switchTab('new')">＋ Walkthrough Baru</button>
+      <button class="tab" id="tabHistory" onclick="switchTab('history')">Riwayat</button>
+    </div>
+
+    <div id="newPanel">
+      <div class="card info-card">
+        <div class="section-heading">
+          <div class="section-icon">🏪</div>
+          <div><h3 class="section-title">Informasi Walkthrough</h3><div class="muted">Pilih store, area dan tanggal inspeksi</div></div>
+        </div>
+        <div class="grid">
+          <div class="field">
+            <label>Store</label>
+            <select id="store">
+              <option value="">-- Pilih Store --</option>
+              <option>CityWalk</option>
+              <option>Citra Tower</option>
+              <option>Menteng</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Area</label>
+            <input id="area" placeholder="Contoh: Front Area / Back Area">
+          </div>
+        </div>
+        <div class="field">
+          <label>Tanggal</label>
+          <input id="date" type="date">
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" onclick="startNew()">＋ Mulai Walkthrough</button>
+          <button class="btn btn-light" onclick="resetForm()">Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="historyPanel" class="hidden"></div>
+
+    <div class="guide-card">
+      <h3>💡 Panduan Singkat</h3>
+      <div class="guide-grid">
+        <div><i>1</i><b>🏪</b><span>Pilih Store,<br>Area & Tanggal</span></div>
+        <div><i>2</i><b>📷</b><span>Tambah Temuan<br>Foto & Keterangan</span></div>
+        <div><i>3</i><b>☑</b><span>Simpan sebagai<br>Draft / Selesaikan</span></div>
+        <div><i>4</i><b>📄</b><span>Export<br>Laporan Word</span></div>
+      </div>
+      <div class="guide-note">ⓘ Foto akan otomatis disimpan di perangkat. Kamu bisa menyimpan sebagai draft dan melanjutkan nanti tanpa kehilangan data.</div>
+    </div>
+  </section>
+
+  <section id="editorView" class="hidden">
+    <div class="card active-report-card">
+      <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+        <div>
+          <h3 class="section-title" style="margin-bottom:4px">Walkthrough Aktif</h3>
+          <div class="muted" id="editorInfo"></div>
+        </div>
+        <span id="editorBadge" class="badge badge-draft">DRAFT</span>
+      </div>
+      <div class="actions" style="margin-top:13px">
+        <button class="btn btn-blue" onclick="addFinding()">＋ Tambah Temuan</button>
+        <button class="btn btn-orange" onclick="openFindingsPreview()">👁 Preview Temuan</button>
+        <button class="btn btn-green" onclick="finishReport()">✓ Selesai</button>
+        <button class="btn btn-light" onclick="saveAndHome()">Simpan & Keluar</button>
+      </div>
+    </div>
+
+    <div id="findingsList"></div>
+
+    <div class="card add-more-card">
+      <button class="btn btn-blue btn-full" onclick="addFinding()">＋ TAMBAH TEMUAN LAGI</button>
+      <div class="muted" style="text-align:center;margin-top:8px">Tidak ada batas jumlah temuan. Tambahkan sebanyak yang diperlukan.</div>
+    </div>
+
+    <div id="editorBottomActions" class="card hidden">
+      <div class="actions">
+        <button class="btn btn-orange" onclick="openPreview()">👁 Preview Laporan</button>
+        <button class="btn btn-blue" onclick="exportWord()">⬇ Export Word</button>
+      </div>
+    </div>
+  </section>
+</main>
+</div>
+
+
+<!-- Finding input is now inline inside the active walkthrough. No limit on findings. -->
+
+
+<div id="findingsPreviewModal" class="modal hidden">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2>Preview Temuan</h2>
+      <button class="close" onclick="closeFindingsPreview()">✕</button>
+    </div>
+    <div id="findingsPreviewContent"></div>
+    <div class="actions" style="margin-top:12px">
+      <button class="btn btn-light" onclick="closeFindingsPreview()">Kembali Edit</button>
+      <button class="btn btn-green" onclick="closeFindingsPreview();finishReport()">✓ Selesai Walkthrough</button>
+    </div>
+  </div>
+</div>
+
+<div id="previewModal" class="modal hidden">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2>Preview Laporan</h2>
+      <div class="actions" style="width:auto">
+        <button class="btn btn-blue" onclick="exportWord()">⬇ Word</button>
+        <button class="close" onclick="closePreview()">✕</button>
+      </div>
+    </div>
+    <div class="preview-wrap"><div id="wordPreview" class="word-page"></div></div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const KEY='WALKTHROUGH_CONTROL_V1';
+let reports=loadReports();
+let active=null;
+let editingFindingId=null;
+let tempPhotos={finding:null,result:null};
+
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+function today(){
+ const d=new Date(), z=n=>String(n).padStart(2,'0');
+ return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate());
+}
+document.getElementById('date').value=today();
+
+function loadReports(){
+ try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]}
+}
+function persist(){
+  try{
+    localStorage.setItem(KEY,JSON.stringify(reports));
+    updateStats();
+    return true;
+  }catch(err){
+    updateStats();
+    toast('Penyimpanan browser penuh. Kurangi ukuran/jumlah foto.');
+    return false;
+  }
+}
+function updateStats(){
+ document.getElementById('statDraft').textContent=reports.filter(x=>x.status==='DRAFT').length;
+ document.getElementById('statDone').textContent=reports.filter(x=>x.status==='SELESAI').length;
+ document.getElementById('statFindings').textContent=reports.reduce((n,x)=>n+(x.findings?.length||0),0);
+}
+updateStats();
+
+function toast(msg){
+ const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+ clearTimeout(window.__toast);window.__toast=setTimeout(()=>t.classList.remove('show'),2200);
+}
+function switchTab(tab){
+ document.getElementById('tabNew').classList.toggle('active',tab==='new');
+ document.getElementById('tabHistory').classList.toggle('active',tab==='history');
+ document.getElementById('newPanel').classList.toggle('hidden',tab!=='new');
+ document.getElementById('historyPanel').classList.toggle('hidden',tab!=='history');
+ if(tab==='history')renderHistory();
+}
+function resetForm(){
+ document.getElementById('store').value='';
+ document.getElementById('area').value='';
+ document.getElementById('date').value=today();
+}
+function startNew(){
+ const store=document.getElementById('store').value;
+ const area=document.getElementById('area').value.trim();
+ const date=document.getElementById('date').value;
+ if(!store)return toast('Pilih store terlebih dahulu');
+ if(!area)return toast('Isi area terlebih dahulu');
+ if(!date)return toast('Pilih tanggal');
+ active={id:uid(),store,area,date,status:'DRAFT',createdAt:new Date().toISOString(),findings:[]};
+ reports.unshift(active);
+ persist();
+ openEditor();
+ addFinding();
+}
+function openEditor(){
+ document.getElementById('homeView').classList.add('hidden');
+ document.getElementById('editorView').classList.remove('hidden');
+ renderEditor();
+}
+function renderEditor(){
+ if(!active)return;
+ document.getElementById('editorInfo').textContent=`${active.store} • ${active.area} • ${formatDate(active.date)} • ${active.findings.length} temuan`;
+ const badge=document.getElementById('editorBadge');
+ badge.textContent=active.status;
+ badge.className='badge '+(active.status==='SELESAI'?'badge-done':'badge-draft');
+ document.getElementById('editorBottomActions').classList.toggle('hidden',active.status!=='SELESAI');
+
+ const list=document.getElementById('findingsList');
+ if(!active.findings.length){
+   list.innerHTML=`<div class="card empty">
+      <div class="emoji">📋</div>
+      <b>Belum ada temuan</b>
+      <div class="muted">Tekan “Tambah Temuan” untuk membuat kartu temuan pertama.</div>
+   </div>`;
+   return;
+ }
+
+ list.innerHTML=active.findings.map((f,i)=>`
+ <div class="card finding inline-finding" id="finding-${f.id}">
+   <div class="finding-head">
+     <div><div class="finding-title">TEMUAN #${i+1}</div><div class="muted">Input temuan & hasil perbaikan</div></div>
+     <button class="btn btn-red small-btn" onclick="removeFinding('${f.id}')">🗑 Hapus</button>
+   </div>
+
+   <div class="finding-input-grid">
+     <div class="input-photo-panel">
+       <div class="photo-label">📷 FOTO TEMUAN</div>
+       ${f.photo ? `<div class="editable-photo"><img src="${f.photo}" alt="Foto temuan"><button class="photo-delete" onclick="clearFindingPhoto('${f.id}','finding')">✕</button></div>`
+                 : `<button class="photo-upload-box" onclick="chooseFindingPhoto('${f.id}','finding')"><span>📷</span><b>Tambah Foto</b><small>Ambil dari kamera / galeri</small></button>`}
+       <input id="finding-file-${f.id}" type="file" accept="image/*" capture="environment" class="hidden" onchange="handleFindingPhoto('${f.id}','finding',this)">
+     </div>
+
+     <div class="input-text-panel">
+       <label>KETERANGAN TEMUAN</label>
+       <textarea placeholder="Tuliskan temuan di sini..." oninput="updateFindingText('${f.id}','desc',this.value)">${esc(f.desc||'')}</textarea>
+     </div>
+   </div>
+
+   <div class="finding-divider"><span>HASIL / PERBAIKAN</span></div>
+
+   <div class="finding-input-grid">
+     <div class="input-photo-panel">
+       <div class="photo-label">📷 FOTO HASIL</div>
+       ${f.resultPhoto ? `<div class="editable-photo"><img src="${f.resultPhoto}" alt="Foto hasil"><button class="photo-delete" onclick="clearFindingPhoto('${f.id}','result')">✕</button></div>`
+                 : `<button class="photo-upload-box result-photo-box" onclick="chooseFindingPhoto('${f.id}','result')"><span>📷</span><b>Tambah Foto Hasil</b><small>Ambil setelah perbaikan</small></button>`}
+       <input id="result-file-${f.id}" type="file" accept="image/*" capture="environment" class="hidden" onchange="handleFindingPhoto('${f.id}','result',this)">
+     </div>
+
+     <div class="input-text-panel">
+       <label>KETERANGAN HASIL / TINDAKAN</label>
+       <textarea placeholder="Tuliskan tindakan atau hasil perbaikan..." oninput="updateFindingText('${f.id}','resultDesc',this.value)">${esc(f.resultDesc||'')}</textarea>
+     </div>
+   </div>
+ </div>`).join('');
+}
+
+
+function addFinding(){
+  if(!active){
+    toast('Tidak ada walkthrough aktif');
+    return;
+  }
+
+  active.findings.push({
+    id: uid(),
+    photo: null,
+    resultPhoto: null,
+    desc: '',
+    resultDesc: '',
+    updatedAt: new Date().toISOString()
+  });
+
+  syncActive();
+  persist();
+  renderEditor();
+
+  setTimeout(()=>{
+    const cards = document.querySelectorAll('.inline-finding');
+    const last = cards[cards.length - 1];
+    if(last) last.scrollIntoView({behavior:'smooth', block:'center'});
+  }, 100);
+}
+
+function removeFinding(id){
+  if(!active) return;
+  if(!confirm('Hapus temuan ini?')) return;
+
+  active.findings = active.findings.filter(f => f.id !== id);
+  syncActive();
+  persist();
+  renderEditor();
+  toast('Temuan dihapus');
+}
+
+function updateFindingText(id, field, value){
+  if(!active) return;
+
+  const f = active.findings.find(x => x.id === id);
+  if(!f) return;
+
+  f[field] = value;
+  f.updatedAt = new Date().toISOString();
+  syncActive();
+  persist();
+}
+
+
+function resizeImage(file, maxW=1000, quality=.72){
+  return new Promise((resolve,reject)=>{
+    if(!file) return reject(new Error('File kosong'));
+
+    const reader = new FileReader();
+
+    reader.onload = ()=>{
+      const img = new Image();
+
+      img.onload = ()=>{
+        let width = img.naturalWidth || img.width;
+        let height = img.naturalHeight || img.height;
+
+        if(!width || !height) return reject(new Error('Foto tidak valid'));
+
+        const ratio = Math.min(1, maxW / width);
+        width = Math.round(width * ratio);
+        height = Math.round(height * ratio);
+
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext('2d', {alpha:false});
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // JPEG is much smaller than the original camera file and is safer for
+        // browser localStorage while retaining enough quality for the report.
+        const data = canvas.toDataURL('image/jpeg', quality);
+        resolve(data);
+      };
+
+      img.onerror = ()=>reject(new Error('Foto tidak dapat dibaca'));
+      img.src = reader.result;
+    };
+
+    reader.onerror = ()=>reject(new Error('Gagal membaca foto'));
+    reader.readAsDataURL(file);
+  });
+}
+
+function chooseFindingPhoto(id, type){
+  const input = document.getElementById(
+    type === 'finding'
+      ? `finding-file-${id}`
+      : `result-file-${id}`
+  );
+
+  if(input) input.click();
+}
+
+function handleFindingPhoto(id, type, input){
+  const file = input && input.files ? input.files[0] : null;
+  if(!file) return;
+
+  resizeImage(file, 1000, .72).then(data=>{
+    if(!active) return;
+
+    const f = active.findings.find(x => x.id === id);
+    if(!f) return;
+
+    if(type === 'finding'){
+      f.photo = data;
+    }else{
+      f.resultPhoto = data;
+    }
+
+    f.updatedAt = new Date().toISOString();
+
+    syncActive();
+    persist();
+    renderEditor();
+
+    setTimeout(()=>{
+      const el = document.getElementById(`finding-${id}`);
+      if(el) el.scrollIntoView({behavior:'smooth', block:'center'});
+    }, 80);
+
+    toast(type === 'finding' ? 'Foto temuan tersimpan' : 'Foto hasil tersimpan');
+  }).catch(()=>{
+    toast('Foto gagal diproses');
+  });
+}
+
+function clearFindingPhoto(id, type){
+  if(!active) return;
+
+  const f = active.findings.find(x => x.id === id);
+  if(!f) return;
+
+  if(type === 'finding'){
+    f.photo = null;
+  }else{
+    f.resultPhoto = null;
+  }
+
+  f.updatedAt = new Date().toISOString();
+  syncActive();
+  persist();
+  renderEditor();
+  toast('Foto dihapus');
+}
+
+function syncActive(){
+ const i=reports.findIndex(x=>x.id===active.id);if(i>=0)reports[i]=active;
+}
+function finishReport(){
+ if(!active.findings.length)return toast('Tambahkan minimal 1 temuan');
+ if(!active.findings.every(f=>f.desc.trim()))return toast('Lengkapi keterangan temuan');
+ if(!confirm('Tandai walkthrough ini sebagai SELESAI?'))return;
+ active.status='SELESAI';active.finishedAt=new Date().toISOString();syncActive();persist();renderEditor();toast('Walkthrough selesai');
+}
+function saveAndHome(){syncActive();persist();goHome();toast('Draft tersimpan')}
+function goHome(){
+ active=null;document.getElementById('editorView').classList.add('hidden');document.getElementById('homeView').classList.remove('hidden');switchTab('history');
+}
+function renderHistory(){
+ const p=document.getElementById('historyPanel');
+ if(!reports.length){p.innerHTML='<div class="card empty"><div class="emoji">📂</div><b>Belum ada laporan</b></div>';return}
+ p.innerHTML=reports.map(r=>`
+ <div class="card">
+  <div style="display:flex;justify-content:space-between;gap:10px">
+   <div><b>${esc(r.store)}</b><div class="muted">${esc(r.area)} • ${formatDate(r.date)}</div></div>
+   <span class="badge ${r.status==='SELESAI'?'badge-done':'badge-draft'}">${r.status}</span>
+  </div>
+  <div class="muted" style="margin-top:8px">${r.findings.length} temuan</div>
+  <div class="actions" style="margin-top:10px">
+   <button class="btn btn-light" onclick="openReport('${r.id}')">Buka</button>
+   ${r.status==='SELESAI'?`<button class="btn btn-blue" onclick="previewReportById('${r.id}')">Preview</button><button class="btn btn-green" onclick="exportReportById('${r.id}')">Word</button>`:''}
+   <button class="btn btn-red" onclick="deleteReport('${r.id}')">Hapus</button>
+  </div>
+ </div>`).join('');
+}
+function openReport(id){active=reports.find(x=>x.id===id);if(active)openEditor()}
+function deleteReport(id){
+ if(!confirm('Hapus laporan ini permanen?'))return;
+ reports=reports.filter(x=>x.id!==id);persist();renderHistory();toast('Laporan dihapus');
+}
+function showHistory(){switchTab('history');window.scrollTo({top:0,behavior:'smooth'})}
+
+function formatDate(s){
+ if(!s)return '-';const d=new Date(s+'T00:00:00');
+ return d.toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'});
+}
+function formatTime(s){
+ try{return new Date(s).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})}catch(e){return''}
+}
+function esc(s){
+ return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+}
+function safeAttr(s){return String(s||'').replace(/"/g,'&quot;')}
+
+
+function openFindingsPreview(){
+  if(!active){
+    toast('Tidak ada walkthrough aktif');
+    return;
+  }
+
+  const box = document.getElementById('findingsPreviewContent');
+
+  if(!active.findings.length){
+    box.innerHTML = `<div class="card empty">
+      <div class="emoji">📋</div>
+      <b>Belum ada temuan</b>
+      <div class="muted">Tambahkan temuan terlebih dahulu.</div>
+    </div>`;
+  }else{
+    box.innerHTML = active.findings.map((f,i)=>`
+      <div class="preview-finding">
+        <div class="preview-finding-head">
+          <b>TEMUAN #${i+1}</b>
+          <span>${f.desc ? '✓ Keterangan terisi' : '⚠ Belum ada keterangan'}</span>
+        </div>
+
+        <div class="preview-photo-grid">
+          <div>
+            <div class="preview-label">FOTO TEMUAN</div>
+            ${f.photo
+              ? `<img src="${f.photo}" alt="Foto temuan">`
+              : `<div class="preview-no-photo">📷 Belum ada foto</div>`}
+          </div>
+
+          <div>
+            <div class="preview-label">FOTO HASIL</div>
+            ${f.resultPhoto
+              ? `<img src="${f.resultPhoto}" alt="Foto hasil">`
+              : `<div class="preview-no-photo result-empty">📷 Belum ada foto hasil</div>`}
+          </div>
+        </div>
+
+        <div class="preview-text-grid">
+          <div>
+            <b>Keterangan Temuan</b>
+            <p>${esc(f.desc || 'Belum diisi')}</p>
+          </div>
+          <div>
+            <b>Keterangan Hasil / Tindakan</b>
+            <p>${esc(f.resultDesc || 'Belum diisi')}</p>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  document.getElementById('findingsPreviewModal').classList.remove('hidden');
+}
+
+function closeFindingsPreview(){
+  document.getElementById('findingsPreviewModal').classList.add('hidden');
+}
+
+function buildWordHTML(r){
+ const items=r.findings.map((f,i)=>`
+  <div class="word-item">
+   <div class="word-item-title">TEMUAN #${i+1}</div>
+   <table class="word-two-col">
+    <tr>
+     <td class="word-photo-cell">${f.photo?`<img src="${f.photo}" alt="Foto temuan">`:'<span>Tidak ada foto</span>'}</td>
+     <td class="word-text-cell"><b>KETERANGAN TEMUAN</b><div>${esc(f.desc||'-')}</div></td>
+    </tr>
+   </table>
+   <table class="word-two-col word-result-table">
+    <tr>
+     <td class="word-photo-cell">${f.resultPhoto?`<img src="${f.resultPhoto}" alt="Foto hasil">`:'<span>Tidak ada foto hasil</span>'}</td>
+     <td class="word-text-cell"><b>KETERANGAN HASIL / TINDAKAN</b><div>${esc(f.resultDesc||'-')}</div></td>
+    </tr>
+   </table>
+  </div>`).join('');
+ return `<div class="report-doc">
+   <h1>WALKTHROUGH REPORT</h1>
+   <div class="subtitle">WT AM Area Renaldi • Walkthrough Control</div>
+   <table class="word-info">
+    <tr><td>STORE</td><td>${esc(r.store)}</td><td>AREA</td><td>${esc(r.area)}</td></tr>
+    <tr><td>TANGGAL</td><td colspan="3">${formatDate(r.date)}</td></tr>
+   </table>
+   <div class="report-count">TOTAL TEMUAN: ${r.findings.length}</div>
+   ${items}
+   <div class="footer-note">WT AM Area Renaldi • Walkthrough Control</div>
+ </div>`;
+}
+
+function openPreview(){
+ if(!active)return;
+ document.getElementById('wordPreview').innerHTML=buildWordHTML(active);
+ document.getElementById('previewModal').classList.remove('hidden');
+}
+function previewReportById(id){active=reports.find(x=>x.id===id);openPreview()}
+function closePreview(){document.getElementById('previewModal').classList.add('hidden')}
+function exportWord(){
+ if(!active)return;
+ if(active.status!=='SELESAI')return toast('Selesaikan walkthrough terlebih dahulu');
+ downloadWord(active);
+}
+function exportReportById(id){const r=reports.find(x=>x.id===id);if(r)downloadWord(r)}
+function exportLatest(){
+  const r=reports.find(x=>x.status==='SELESAI') || reports.find(x=>x.status==='DRAFT');
+  if(!r)return toast('Belum ada laporan untuk di-export');
+  if(r.status!=='SELESAI')return toast('Selesaikan walkthrough terlebih dahulu');
+  downloadWord(r);
+}
+function downloadWord(r){
+ if(!r || !r.findings || !r.findings.length)return toast('Belum ada temuan');
+ const items=r.findings.map((f,i)=>`
+  <table class="item" cellspacing="0" cellpadding="0">
+   <tr><td class="itemtitle" colspan="2">TEMUAN #${i+1}</td></tr>
+   <tr>
+    <td class="photo"><div class="photo-caption">FOTO TEMUAN</div>${f.photo?`<img src="${f.photo}" width="240" style="max-width:240px;max-height:190px;">`:'<div class="no-photo">Tidak ada foto</div>'}</td>
+    <td class="txt"><b>KETERANGAN TEMUAN</b><br><div>${esc(f.desc||'-')}</div></td>
+   </tr>
+   <tr><td colspan="2" class="sectionbar">HASIL / PERBAIKAN</td></tr>
+   <tr>
+    <td class="photo"><div class="photo-caption">FOTO HASIL</div>${f.resultPhoto?`<img src="${f.resultPhoto}" width="240" style="max-width:240px;max-height:190px;">`:'<div class="no-photo">Tidak ada foto hasil</div>'}</td>
+    <td class="txt"><b>KETERANGAN HASIL / TINDAKAN</b><br><div>${esc(f.resultDesc||'-')}</div></td>
+   </tr>
+  </table>`).join('');
+
+ const htmlDoc=`<!DOCTYPE html><html><head><meta charset="UTF-8">
+ <title>Walkthrough ${esc(r.store)} ${esc(r.date)}</title>
+ <style>
+ @page{size:A4;margin:18mm}
+ body{font-family:Arial,Helvetica,sans-serif;color:#111;font-size:10pt;margin:0}
+ h1{text-align:center;font-size:20pt;margin:0 0 4pt;color:#111827}
+ .subtitle{text-align:center;font-size:9pt;color:#64748b;margin-bottom:14pt}
+ .info{border-collapse:collapse;width:100%;margin-bottom:10pt}
+ .info td{border:1px solid #555;padding:7pt}
+ .info .label{font-weight:bold;background:#f1f5f9;width:14%}
+ .count{font-weight:bold;font-size:9pt;margin:7pt 0 12pt}
+ .item{border-collapse:collapse;width:100%;margin:0 0 16pt;page-break-inside:avoid}
+ .item td{border:1px solid #666;vertical-align:middle}
+ .itemtitle{font-weight:bold;background:#e5e7eb;padding:7pt;font-size:10pt}
+ .photo{width:40%;text-align:center;padding:8pt;height:145pt}
+ .photo img{display:block;margin:5pt auto;object-fit:contain}
+ .photo-caption{font-size:8pt;font-weight:bold;color:#475569;margin-bottom:4pt}
+ .no-photo{color:#777;font-size:9pt;padding:30pt 5pt}
+ .txt{width:60%;padding:10pt;font-size:9.5pt;line-height:1.5;vertical-align:top}
+ .txt b{font-size:8.5pt;color:#334155}
+ .sectionbar{background:#f1f5f9;padding:5pt;font-size:8.5pt;font-weight:bold;text-align:left}
+ .footer{text-align:center;color:#777;font-size:8pt;margin-top:15pt}
+ </style></head><body>
+ <h1>WALKTHROUGH REPORT</h1>
+ <div class="subtitle">WT AM Area Renaldi • Walkthrough Control</div>
+ <table class="info">
+  <tr><td class="label">STORE</td><td>${esc(r.store)}</td><td class="label">AREA</td><td>${esc(r.area)}</td></tr>
+  <tr><td class="label">TANGGAL</td><td colspan="3">${formatDate(r.date)}</td></tr>
+ </table>
+ <div class="count">TOTAL TEMUAN: ${r.findings.length}</div>
+ ${items}
+ <div class="footer">WT AM Area Renaldi • Walkthrough Control</div>
+ </body></html>`;
+
+ const blob=new Blob(['\ufeff',htmlDoc],{type:'application/msword'});
+ const a=document.createElement('a');
+ a.href=URL.createObjectURL(blob);
+ const safe=(r.store+'_'+r.date).replace(/[^a-z0-9_-]+/gi,'_');
+ a.download=`WT_AM_Walkthrough_${safe}.doc`;
+ document.body.appendChild(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+ toast('File Word dibuat');
+}
+
+// Close preview modals when tapping backdrop
+document.getElementById('previewModal').addEventListener('click',e=>{if(e.target.id==='previewModal')closePreview()});
+document.getElementById('findingsPreviewModal').addEventListener('click',e=>{if(e.target.id==='findingsPreviewModal')closeFindingsPreview()});
+
+// Auto save active draft periodically
+setInterval(()=>{if(active){syncActive();persist()}},15000);
+</script>
+</body>
+</html>
 
