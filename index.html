@@ -2,899 +2,2551 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#111827">
-<title>WT AM Area Renaldi - Walkthrough Control</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>WT AM Area Renaldi - Frontend V6.3</title>
 <style>
 :root{
-  --bg:#f3f4f6;--card:#fff;--text:#111827;--muted:#6b7280;--line:#e5e7eb;
-  --primary:#111827;--blue:#2563eb;--green:#16a34a;--red:#dc2626;--orange:#ea580c;
-  --shadow:0 8px 24px rgba(0,0,0,.07);--radius:18px
+  --bg:#f5f7fb;
+  --card:#fff;
+  --text:#253449;
+  --muted:#738196;
+  --line:#e5eaf1;
+  --blue:#dceafb;
+  --blue2:#7faedb;
+  --green:#e2f3e5;
+  --green2:#70b77e;
+  --purple:#eadff8;
+  --purple2:#9a79c7;
+  --orange:#fff0d6;
+  --orange2:#d7a34d;
+  --peach:#fbe4da;
+  --peach2:#d58b6d;
+  --danger:#f9dddd;
+  --danger2:#c86666;
+  --shadow:0 10px 28px rgba(48,67,91,.08);
+  --radius:18px;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif}
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
 button,input,select,textarea{font:inherit}
 button{cursor:pointer}
-.app{max-width:900px;margin:auto;padding-bottom:40px}
-.topbar{position:sticky;top:0;z-index:20;background:rgba(17,24,39,.97);color:#fff;padding:15px 16px;box-shadow:0 3px 14px rgba(0,0,0,.18)}
-.topbar-inner{max-width:900px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:10px}
-.brand{font-size:19px;font-weight:800}.brand small{display:block;font-size:11px;font-weight:500;opacity:.65;margin-top:2px}
-.top-actions{display:flex;gap:7px}
-.icon-btn{border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#fff;border-radius:11px;padding:9px 11px}
-main{padding:16px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:17px;margin-bottom:15px}
-.hero{background:linear-gradient(135deg,#111827,#374151);color:#fff;border:0}
-.hero h1{margin:0 0 6px;font-size:25px}.hero p{margin:0;color:#d1d5db;font-size:13px;line-height:1.5}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.field{margin-bottom:13px}.field:last-child{margin-bottom:0}
-label{display:block;font-size:12px;font-weight:800;margin-bottom:7px;color:#374151;text-transform:uppercase;letter-spacing:.3px}
-input,select,textarea{width:100%;border:1px solid #d1d5db;border-radius:12px;background:#fff;padding:12px;color:var(--text);outline:none}
-input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
-textarea{min-height:105px;resize:vertical}
-.btn{border:0;border-radius:12px;padding:12px 15px;font-weight:800;transition:.15s}
-.btn:active{transform:scale(.98)}.btn-primary{background:var(--primary);color:#fff}.btn-blue{background:var(--blue);color:#fff}
-.btn-green{background:var(--green);color:#fff}.btn-red{background:#fee2e2;color:#991b1b}.btn-light{background:#f3f4f6;color:#111827;border:1px solid var(--line)}
-.btn-orange{background:var(--orange);color:#fff}
-.btn-full{width:100%}
-.actions{display:flex;gap:9px;flex-wrap:wrap}.actions .btn{flex:1;min-width:130px}
-.section-title{font-size:16px;font-weight:900;margin:0 0 12px}
-.muted{color:var(--muted);font-size:12px}
-.badge{display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:800}
-.badge-draft{background:#fef3c7;color:#92400e}.badge-done{background:#dcfce7;color:#166534}
-.report-head{border:1px solid var(--line);border-radius:14px;padding:15px;background:#fafafa;margin-bottom:12px}
-.report-head .title{text-align:center;font-weight:900;font-size:19px;margin-bottom:13px}
-.info-table{width:100%;border-collapse:collapse;font-size:13px}.info-table td{padding:6px 4px;border-bottom:1px solid var(--line)}
-.info-table td:first-child{font-weight:800;width:90px}
-.finding{border:1px solid var(--line);border-radius:15px;overflow:hidden;margin-bottom:13px;background:#fff}
-.finding-head{padding:11px 13px;background:#f9fafb;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px}
-.finding-title{font-weight:900}.finding-body{padding:13px}
-.photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.photo-box{border:1px dashed #cbd5e1;border-radius:12px;overflow:hidden;background:#f8fafc;min-height:130px;display:flex;align-items:center;justify-content:center;position:relative}
-.photo-box img{width:100%;height:220px;object-fit:cover;display:block}
-.photo-placeholder{text-align:center;color:#94a3b8;font-size:12px;padding:20px}
-.photo-label{font-size:11px;font-weight:900;color:#475569;margin-bottom:6px}
-.text-block{margin-top:11px}.text-block strong{font-size:11px;text-transform:uppercase;color:#64748b}.text-content{font-size:13px;line-height:1.55;margin-top:4px;white-space:pre-wrap}
-.finding-buttons{display:flex;gap:7px;margin-top:12px}.finding-buttons .btn{flex:1}
-.empty{text-align:center;padding:30px 15px;color:#9ca3af}
-.empty .emoji{font-size:34px;margin-bottom:8px}
+.app{min-height:100vh}
+.topbar{
+  position:sticky;top:0;z-index:30;
+  background:rgba(255,255,255,.94);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+  padding:14px 18px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{
+  width:44px;height:44px;border-radius:14px;
+  background:linear-gradient(135deg,#dceafb,#eadff8,#e2f3e5);
+  display:grid;place-items:center;font-size:22px;
+  box-shadow:0 6px 18px rgba(70,100,130,.12);
+}
+.brand h1{margin:0;font-size:18px}
+.brand small{color:var(--muted)}
+.userbox{display:flex;align-items:center;gap:10px}
+.userpill{
+  background:#f0f4f8;border:1px solid var(--line);
+  padding:8px 12px;border-radius:999px;font-size:13px;
+}
+.btn{
+  border:0;border-radius:12px;padding:10px 14px;
+  font-weight:700;transition:.2s;
+}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:#dceafb;color:#315675}
+.btn-green{background:#e2f3e5;color:#32643c}
+.btn-purple{background:#eadff8;color:#5c4779}
+.btn-orange{background:#fff0d6;color:#76551d}
+.btn-peach{background:#fbe4da;color:#704a3c}
+.btn-danger{background:#f9dddd;color:#7e3737}
+.btn-light{background:#f4f6f9;color:#526174;border:1px solid var(--line)}
+.page{max-width:1250px;margin:auto;padding:22px}
+.login-wrap{
+  min-height:100vh;display:grid;place-items:center;padding:20px;
+  background:linear-gradient(135deg,#eef5fc,#faf7ff 52%,#f0faf3);
+}
+.login-card{
+  width:min(430px,100%);background:white;border:1px solid var(--line);
+  border-radius:28px;box-shadow:var(--shadow);padding:30px;
+}
+.login-card .logo{margin-bottom:16px}
+.login-card h2{margin:0 0 6px;font-size:25px}
+.login-card p{margin:0 0 22px;color:var(--muted)}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12px;font-weight:700;color:#59697d;margin-bottom:7px}
+input,select,textarea{
+  width:100%;border:1px solid #dfe5ed;background:#fff;
+  border-radius:12px;padding:11px 12px;outline:none;color:var(--text);
+}
+input:focus,select:focus,textarea:focus{border-color:#9db9d7;box-shadow:0 0 0 3px rgba(157,185,215,.18)}
+textarea{min-height:90px;resize:vertical}
+.full{width:100%}
 .hidden{display:none!important}
-.tabbar{display:flex;gap:7px;margin-bottom:14px}.tab{flex:1;padding:11px;border:1px solid var(--line);border-radius:11px;background:#fff;font-weight:800;color:#6b7280}.tab.active{background:#111827;color:#fff;border-color:#111827}
-.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:13px}.stat{background:rgba(255,255,255,.1);border-radius:12px;padding:10px}.stat b{display:block;font-size:20px}.stat span{font-size:10px;color:#d1d5db}
-.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);background:#111827;color:#fff;padding:12px 17px;border-radius:12px;font-size:13px;font-weight:700;opacity:0;pointer-events:none;transition:.25s;z-index:99;box-shadow:0 8px 25px rgba(0,0,0,.2)}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:50;display:flex;align-items:flex-end;justify-content:center;padding:0}
-.modal-card{background:#fff;width:min(900px,100%);max-height:94vh;overflow:auto;border-radius:22px 22px 0 0;padding:17px}
-.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.modal-head h2{margin:0;font-size:18px}
-.close{border:0;background:#f3f4f6;border-radius:10px;padding:8px 12px;font-weight:800}
-.preview-wrap{background:#e5e7eb;padding:10px}.word-page{background:#fff;padding:25px;max-width:820px;margin:auto}
-.word-page h1{text-align:center;font-size:22px;margin:0 0 5px}.word-page .subtitle{text-align:center;font-size:11px;color:#555;margin-bottom:16px}
-.word-info{border-collapse:collapse;width:100%;font-size:12px;margin-bottom:17px}.word-info td{border:1px solid #777;padding:6px}.word-info td:first-child{width:80px;font-weight:bold;background:#f2f2f2}
-.word-item{margin-bottom:17px;border:1px solid #777;page-break-inside:avoid}.word-item-title{font-weight:bold;background:#eee;padding:7px;border-bottom:1px solid #777;font-size:12px}
-.word-row{display:grid;grid-template-columns:40% 60%;min-height:145px}.word-photo{padding:7px;border-right:1px solid #777;display:flex;align-items:center;justify-content:center}.word-photo img{max-width:100%;max-height:180px;object-fit:contain}.word-text{padding:9px;font-size:11px;line-height:1.45;white-space:pre-wrap}
-.word-result{border-top:1px solid #777}.word-result .word-row{min-height:120px}
-.footer-note{text-align:center;font-size:10px;color:#777;margin-top:18px}
-@media(max-width:600px){
- .grid,.photo-grid{grid-template-columns:1fr}.app main{padding:11px}.card{padding:14px}
- .word-page{padding:14px}.word-row{grid-template-columns:45% 55%}
+.nav{
+  display:flex;gap:8px;overflow:auto;padding:4px 0 16px;
+  scrollbar-width:none;
 }
-@media print{body{background:#fff}.topbar,main{display:none}.modal{position:static;background:none}.modal-card{max-height:none;padding:0}.preview-wrap{padding:0;background:#fff}}
-
-/* ===== WT AM AREA RENALDI COLORFUL THEME ===== */
-body{background:linear-gradient(180deg,#f8fafc 0%,#f1f5f9 100%)}
-.topbar{background:linear-gradient(110deg,#ef233c 0%,#d90429 38%,#5b21b6 72%,#075985 100%);padding:18px 16px;border:0}
-.brand{font-size:22px;letter-spacing:.2px}.brand span{color:#ffe66d}.brand small{font-size:10px;letter-spacing:2px;margin-top:5px}
-.hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#ef233c 0%,#c9184a 35%,#5b21b6 70%,#075985 100%);padding:21px}
-.hero:after{content:"";position:absolute;width:190px;height:190px;right:-75px;top:-85px;border-radius:50%;background:rgba(255,255,255,.11)}
-.hero h1{font-size:27px;position:relative;z-index:1}.hero p{max-width:620px;position:relative;z-index:1}
-.stat-grid{position:relative;z-index:1}
-.stat{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.13);backdrop-filter:blur(8px);padding:11px;border-radius:15px}
-.stat-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.23);font-size:21px;font-weight:900}
-.stat b{font-size:22px}.stat span{font-weight:900}.stat small{display:block;font-size:9px;color:#e5e7eb;margin-top:2px}
-.stat-blue .stat-icon{background:#bfdbfe;color:#1d4ed8}.stat-green .stat-icon{background:#bbf7d0;color:#15803d}.stat-pink .stat-icon{background:#fecdd3;color:#be123c}
-.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:13px}
-.quick{border:0;border-radius:18px;min-height:118px;padding:13px 9px;color:#fff;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 9px 20px rgba(0,0,0,.10)}
-.quick strong{font-size:28px;line-height:1;margin-bottom:8px}.quick b{font-size:15px;line-height:1.15}.quick small{margin-top:5px;opacity:.85;font-size:10px}
-.q-blue{background:linear-gradient(145deg,#1d4ed8,#075985)}.q-purple{background:linear-gradient(145deg,#7c3aed,#4c1d95)}.q-orange{background:linear-gradient(145deg,#f59e0b,#ea580c)}.q-green{background:linear-gradient(145deg,#10b981,#059669)}
-.tabbar{background:#fff;padding:4px;border-radius:14px;border:1px solid var(--line);box-shadow:0 4px 14px rgba(0,0,0,.04)}
-.tab{border:0}.tab.active{background:#111827}
-.info-card{border-top:4px solid #ef233c}
-.section-heading{display:flex;align-items:center;gap:11px;margin-bottom:16px}.section-icon{width:46px;height:46px;border-radius:14px;background:linear-gradient(145deg,#ff3b30,#e11d48);color:#fff;display:flex;align-items:center;justify-content:center;font-size:23px;box-shadow:0 7px 16px rgba(239,35,60,.25)}
-.section-heading .section-title{margin:0 0 3px}
-label{color:#334155}select{background:linear-gradient(90deg,#fff7f8,#fff);border-color:#f3c4cb}.btn-primary{background:linear-gradient(135deg,#ef233c,#e11d48);box-shadow:0 7px 16px rgba(239,35,60,.22)}
-.guide-card{background:linear-gradient(135deg,#ecfdf5,#eff6ff);border:1px solid #d1fae5;border-radius:18px;padding:17px;margin-bottom:15px}
-.guide-card h3{margin:0 0 14px;color:#047857}.guide-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.guide-grid>div{text-align:center;position:relative}.guide-grid i{display:inline-flex;width:25px;height:25px;border-radius:50%;background:#2563eb;color:#fff;align-items:center;justify-content:center;font-style:normal;font-weight:900;font-size:12px}.guide-grid>div:nth-child(2) i{background:#ef233c}.guide-grid>div:nth-child(3) i{background:#10b981}.guide-grid>div:nth-child(4) i{background:#f59e0b}.guide-grid b{display:block;font-size:22px;margin:6px}.guide-grid span{font-size:10px;color:#475569;line-height:1.35;display:block}.guide-note{margin-top:15px;padding:11px 12px;border:1px solid #fde68a;background:#fffbeb;border-radius:13px;color:#92400e;font-size:11px;line-height:1.5}
-@media(max-width:600px){.quick-grid{grid-template-columns:repeat(4,1fr);gap:7px}.quick{min-height:105px;border-radius:15px}.quick strong{font-size:23px}.quick b{font-size:12px}.quick small{font-size:9px}.guide-grid{gap:2px}.guide-grid span{font-size:9px}}
-
-
-
-button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-.photo-upload-box{cursor:pointer}
-.small-btn{cursor:pointer}
-
-/* ===== FINDINGS PREVIEW ===== */
-.preview-finding{border:1px solid #dbe3ef;border-radius:15px;overflow:hidden;margin-bottom:13px;background:#fff}
-.preview-finding-head{display:flex;justify-content:space-between;gap:8px;padding:11px 13px;background:#f8fafc;border-bottom:1px solid #e5e7eb}
-.preview-finding-head span{font-size:10px;color:#64748b}
-.preview-photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:10px}
-.preview-label{font-size:9px;font-weight:900;color:#475569;margin-bottom:5px}
-.preview-photo-grid img,.preview-no-photo{width:100%;height:145px;object-fit:cover;border-radius:10px;background:#f8fafc}
-.preview-no-photo{display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:11px}
-.result-empty{background:#f0fdf4}
-.preview-text-grid{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #e5e7eb}
-.preview-text-grid>div{padding:10px;font-size:11px;line-height:1.45}
-.preview-text-grid>div+div{border-left:1px solid #e5e7eb}
-.preview-text-grid b{font-size:9px;text-transform:uppercase;color:#475569}
-.preview-text-grid p{white-space:pre-wrap;margin:5px 0 0;color:#111827}
-@media(max-width:600px){
-  .preview-photo-grid,.preview-text-grid{grid-template-columns:1fr}
-  .preview-text-grid>div+div{border-left:0;border-top:1px solid #e5e7eb}
-  .preview-photo-grid img,.preview-no-photo{height:175px}
+.nav::-webkit-scrollbar{display:none}
+.nav button{
+  white-space:nowrap;border:1px solid var(--line);background:#fff;
+  color:#657387;border-radius:12px;padding:10px 13px;font-weight:700;
 }
-/* ===== DYNAMIC FINDING CARDS ===== */
-.active-report-card{border-top:4px solid #2563eb}
-.inline-finding{padding:0;overflow:hidden}
-.inline-finding .finding-head{padding:14px 15px;background:linear-gradient(90deg,#eff6ff,#fff);border-bottom:1px solid #dbeafe}
-.small-btn{padding:8px 10px;font-size:11px;min-width:auto}
-.finding-input-grid{display:grid;grid-template-columns:38% 62%;gap:0}
-.input-photo-panel{padding:14px;border-right:1px solid var(--line)}
-.input-text-panel{padding:14px}
-.photo-upload-box{width:100%;min-height:170px;border:2px dashed #cbd5e1;border-radius:14px;background:#f8fafc;color:#475569;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}
-.photo-upload-box span{font-size:34px}.photo-upload-box b{font-size:13px}.photo-upload-box small{font-size:10px;color:#94a3b8}
-.result-photo-box{background:#f0fdf4;border-color:#bbf7d0}
-.editable-photo{position:relative;border-radius:14px;overflow:hidden;background:#f8fafc}
-.editable-photo img{display:block;width:100%;height:170px;object-fit:cover}
-.photo-delete{position:absolute;right:7px;top:7px;border:0;background:rgba(17,24,39,.8);color:#fff;border-radius:9px;width:30px;height:30px;font-weight:900}
-.input-text-panel textarea{min-height:170px}
-.finding-divider{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#f8fafc;padding:8px 14px;font-size:10px;font-weight:900;color:#475569}
-.add-more-card{background:linear-gradient(135deg,#eff6ff,#faf5ff);border:1px dashed #93c5fd}
-.report-doc .word-info{border-collapse:collapse;width:100%}
-.word-two-col{width:100%;border-collapse:collapse;table-layout:fixed}
-.word-photo-cell{width:40%;height:155px;border:1px solid #777;padding:7px;text-align:center;vertical-align:middle}
-.word-photo-cell img{max-width:100%;max-height:145px;object-fit:contain}
-.word-photo-cell span{color:#777;font-size:10px}
-.word-text-cell{width:60%;border:1px solid #777;padding:9px;vertical-align:top;font-size:11px;line-height:1.45;white-space:pre-wrap}
-.word-text-cell b{font-size:10px;display:block;margin-bottom:5px;color:#334155}
-.word-result-table{border-top:0}
-.report-count{font-size:11px;font-weight:900;margin:10px 0}
-@media(max-width:600px){
- .finding-input-grid{grid-template-columns:1fr}
- .input-photo-panel{border-right:0;border-bottom:1px solid var(--line)}
- .input-text-panel textarea{min-height:115px}
- .photo-upload-box,.editable-photo img{min-height:155px;height:155px}
+.nav button.active{background:#dceafb;color:#315675;border-color:#c6dbef}
+.hero{
+  background:linear-gradient(135deg,#eef6ff,#fbf8ff 55%,#f3fbf5);
+  border:1px solid var(--line);border-radius:24px;padding:22px;
+  box-shadow:var(--shadow);margin-bottom:18px;
+}
+.hero h2{margin:0 0 5px;font-size:25px}
+.hero p{margin:0;color:var(--muted)}
+.stats{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px;
+}
+.stat{
+  background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;
+  box-shadow:var(--shadow);min-height:115px;
+}
+.stat .icon{font-size:22px}
+.stat .label{font-size:12px;color:var(--muted);margin-top:9px}
+.stat .value{font-size:23px;font-weight:800;margin-top:5px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.card{
+  background:#fff;border:1px solid var(--line);border-radius:18px;
+  padding:18px;box-shadow:var(--shadow);
+}
+.card h3{margin:0 0 14px;font-size:17px}
+.card-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:14px}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}
+table{width:100%;border-collapse:collapse;min-width:650px}
+th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}
+th{background:#eef4fb;color:#41556b;position:sticky;top:0;z-index:1}
+tr:last-child td{border-bottom:0}
+.badge{
+  display:inline-flex;align-items:center;gap:5px;
+  border-radius:999px;padding:5px 9px;font-size:11px;font-weight:800;
+}
+.badge-open{background:var(--danger);color:#873d3d}
+.badge-progress{background:var(--orange);color:#74521d}
+.badge-wait{background:var(--purple);color:#5d4876}
+.badge-done{background:var(--green);color:#32663d}
+.badge-closed{background:#e8ecef;color:#58636e}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.form-grid .full-row{grid-column:1/-1}
+.filebox{
+  border:2px dashed #d7e0ea;border-radius:14px;padding:14px;
+  background:#fbfcfe;
+}
+.filebox input{border:0;padding:0;background:transparent}
+.preview{
+  margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;
+}
+.preview img{width:90px;height:70px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
+.toast{
+  position:fixed;right:18px;bottom:18px;z-index:99;
+  background:#253449;color:white;padding:12px 15px;border-radius:12px;
+  box-shadow:var(--shadow);max-width:360px;
+}
+.loading{
+  position:fixed;inset:0;background:rgba(245,247,251,.75);
+  display:grid;place-items:center;z-index:100;backdrop-filter:blur(4px);
+}
+.spinner{
+  background:#fff;padding:18px 22px;border-radius:16px;box-shadow:var(--shadow);
+  font-weight:700;color:#4d6074;
+}
+.kpi-status{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px;background:#fafbfc;border-radius:12px;margin-bottom:8px}
+.small{font-size:12px;color:var(--muted)}
+.empty{padding:25px;text-align:center;color:var(--muted)}
+.photo-link{color:#416b92;font-weight:700;text-decoration:none}
+.section-title{margin:20px 0 10px;font-size:15px;color:#526174}
+.walk-card{border:1px solid var(--line);border-radius:16px;padding:16px;background:#fff;margin-bottom:12px}
+.walk-card-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.walk-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+.walk-meta-item{background:#f8fafc;border-radius:12px;padding:10px}
+.walk-meta-item .label{font-size:11px;color:var(--muted);margin-bottom:4px}
+.walk-finding{margin-top:14px;padding:13px;border-radius:12px;background:#fbfcfe;border:1px solid var(--line);line-height:1.55}
+.photo-grid{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.photo-box{width:145px}
+.photo-box img{width:145px;height:105px;object-fit:cover;border-radius:12px;border:1px solid var(--line);display:block}
+.photo-box a{display:block;text-align:center;margin-top:6px;font-size:12px}
+.timeline{margin-top:15px;border-left:3px solid #dceafb;padding-left:14px}
+.timeline-item{margin-bottom:12px}
+.timeline-item .date{font-size:11px;color:var(--muted)}
+@media(max-width:700px){
+  .walk-meta{grid-template-columns:repeat(2,1fr)}
+  .walk-card-head{flex-direction:column}
 }
 
+@media(max-width:850px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .grid{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .page{padding:14px}
+  .topbar{padding:11px 13px}
+  .brand h1{font-size:15px}
+  .brand small{font-size:10px}
+  .userpill{display:none}
+  .stats{grid-template-columns:repeat(2,1fr);gap:10px}
+  .stat{padding:14px;min-height:105px}
+  .stat .value{font-size:18px}
+  .form-grid{grid-template-columns:1fr}
+  .form-grid .full-row{grid-column:auto}
+  .hero{padding:18px}
+}
+</style>
+
+<style>
+  .store-only-note{
+    margin-top:8px;
+    padding:10px 12px;
+    border-radius:12px;
+    background:#f5f8fc;
+    border:1px solid #dfe7f1;
+    font-size:13px;
+  }
+</style>
+
+<style>
+/* STORE API MAPPING V2: display names are kept in UI, backend receives canonical store keys. */
 </style>
 </head>
 <body>
-<div class="topbar">
-  <div class="topbar-inner">
-    <div class="brand">WT AM Area <span>Renaldi</span><small>WALKTHROUGH CONTROL</small></div>
-    <div class="top-actions">
-      <button class="icon-btn" onclick="showHistory()">📁 Draft</button>
+
+<div id="loading" class="loading hidden">
+  <div class="spinner">⏳ Memproses...</div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<div id="loginView" class="login-wrap">
+  <div class="login-card">
+    <div class="logo">🧭</div>
+    <h2>WT AM Area Renaldi</h2>
+    <p>Control Store Area · Login Sistem</p>
+
+    <div class="field">
+      <label>USERNAME</label>
+      <input id="loginUsername" autocomplete="username" placeholder="Masukkan username">
+    </div>
+
+    <div class="field">
+      <label>PASSWORD</label>
+      <input id="loginPassword" type="password" autocomplete="current-password" placeholder="Masukkan password">
+    </div>
+
+    <button class="btn btn-primary full" onclick="login()">MASUK KE SISTEM</button>
+
+    <div class="small" style="margin-top:14px;text-align:center">
+      Frontend terhubung langsung ke Code.gs pada Apps Script Web App.
     </div>
   </div>
 </div>
 
-<div class="app">
-<main>
-  <section id="homeView">
-    <div class="card hero">
-      <h1>Walkthrough Store</h1>
-      <p>Buat laporan temuan, simpan sebagai draft, lengkapi hasil perbaikan, lalu export menjadi laporan Word.</p>
-      <div class="stat-grid">
-        <div class="stat stat-blue"><div class="stat-icon">📋</div><div><b id="statDraft">0</b><span>DRAFT</span><small>Belum diselesaikan</small></div></div>
-        <div class="stat stat-green"><div class="stat-icon">✓</div><div><b id="statDone">0</b><span>SELESAI</span><small>Sudah dikumpulkan</small></div></div>
-        <div class="stat stat-pink"><div class="stat-icon">!</div><div><b id="statFindings">0</b><span>TEMUAN</span><small>Total temuan</small></div></div>
+<div id="appView" class="app hidden">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">🧭</div>
+      <div>
+        <h1>WT AM Area Renaldi</h1>
+        <small>STORE OPERATION SYSTEM</small>
       </div>
     </div>
 
-    <div class="quick-grid">
-      <button class="quick q-blue" onclick="switchTab('new');window.scrollTo({top:0,behavior:'smooth'})"><strong>＋</strong><b>Walkthrough<br>Baru</b><small>Mulai inspeksi</small></button>
-      <button class="quick q-purple" onclick="switchTab('history');window.scrollTo({top:0,behavior:'smooth'})"><strong>📂</strong><b>Draft</b><small>Lanjutkan</small></button>
-      <button class="quick q-orange" onclick="switchTab('history');window.scrollTo({top:0,behavior:'smooth'})"><strong>◷</strong><b>Riwayat</b><small>Laporan</small></button>
-      <button class="quick q-green" onclick="exportLatest()"><strong>▥</strong><b>Export</b><small>ke Word</small></button>
+    <div class="userbox">
+      <div id="userPill" class="userpill">-</div>
+      <button class="btn btn-light" onclick="logout()">Keluar</button>
     </div>
-    <div class="tabbar">
-      <button class="tab active" id="tabNew" onclick="switchTab('new')">＋ Walkthrough Baru</button>
-      <button class="tab" id="tabHistory" onclick="switchTab('history')">Riwayat</button>
+  </header>
+
+  <main class="page">
+    <nav class="nav" id="nav">
+      <button data-page="dashboard" onclick="showPage('dashboard')">🏠 Dashboard</button>
+      <button data-page="sales" onclick="showPage('sales')">💰 Sales</button>
+      <button data-page="waste" onclick="showPage('waste')">♻️ Waste</button>
+      <button data-page="maintenance" onclick="showPage('maintenance')">🔧 Maintenance</button>
+      <button data-page="kpi" onclick="showPage('kpi')">📊 KPI Store</button>
+      <button data-page="walkthrough" onclick="showPage('walkthrough')">📝 Walkthrough</button>
+      <button data-page="smallware" onclick="showPage('smallware')">🍴 Smallware</button>
+    </nav>
+
+    <div class="store-only-note">
+      🔐 <b>STORE PORTAL</b> — Login menggunakan akun Store masing-masing.
+      Data tersimpan di database pusat WT AM Area Renaldi.
     </div>
 
-    <div id="newPanel">
-      <div class="card info-card">
-        <div class="section-heading">
-          <div class="section-icon">🏪</div>
-          <div><h3 class="section-title">Informasi Walkthrough</h3><div class="muted">Pilih store, area dan tanggal inspeksi</div></div>
+    <section id="page-dashboard" class="page-section">
+      <div class="hero">
+        <h2 id="welcomeTitle">Dashboard</h2>
+        <p id="welcomeSub">Satu portal untuk menjalankan seluruh sistem operasional store.</p>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="icon">💰</div>
+          <div class="label">TOTAL SALES</div>
+          <div id="statSales" class="value">Rp 0</div>
         </div>
-        <div class="grid">
+        <div class="stat">
+          <div class="icon">♻️</div>
+          <div class="label">WASTE QTY</div>
+          <div id="statWaste" class="value">0</div>
+        </div>
+        <div class="stat">
+          <div class="icon">🔧</div>
+          <div class="label">MAINTENANCE OPEN</div>
+          <div id="statMaintenance" class="value">0</div>
+        </div>
+        <div class="stat">
+          <div class="icon">📊</div>
+          <div class="label">KPI UPLOAD</div>
+          <div id="statKpi" class="value">0</div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <div class="card-head">
+            <h3>🔧 Maintenance Terbaru</h3>
+            <button class="btn btn-light" onclick="loadDashboard()">Refresh</button>
+          </div>
+          <div id="maintenanceMini"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h3>📊 Status KPI</h3>
+          </div>
+          <div id="kpiMini"></div>
+        </div>
+      </div>
+
+
+      <div class="card" style="margin-top:16px">
+        <div class="card-head">
+          <div>
+            <h3>🍴 Smallware</h3>
+            <div class="small">Ringkasan request terbaru Smallware.</div>
+          </div>
+          <button class="btn btn-light" onclick="showPage('smallware')">Buka Smallware</button>
+        </div>
+        <div id="smallwareDashboardMini">
+          <div class="empty">Klik Buka Smallware untuk melihat data.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="page-sales" class="page-section hidden">
+      <div class="hero">
+        <h2>💰 Sales Report</h2>
+        <p>Input laporan sales harian store.</p>
+      </div>
+
+      <div class="card">
+        <div class="form-grid">
           <div class="field">
-            <label>Store</label>
-            <select id="store">
-              <option value="">-- Pilih Store --</option>
-              <option>CityWalk</option>
-              <option>Citra Tower</option>
-              <option>Menteng</option>
+            <label>TANGGAL</label>
+            <input id="salesDate" type="date">
+          </div>
+          <div class="field">
+            <label>STORE</label>
+            <input id="salesStore" readonly>
+          </div>
+          <div class="field">
+            <label>DINE IN</label>
+            <input id="salesDineIn" type="number" min="0" placeholder="0">
+          </div>
+          <div class="field">
+            <label>DELIVERY</label>
+            <input id="salesDelivery" type="number" min="0" placeholder="0">
+          </div>
+          <div class="field">
+            <label>TAKE AWAY</label>
+            <input id="salesTakeAway" type="number" min="0" placeholder="0">
+          </div>
+          <div class="field">
+            <label>CONNECT / BO</label>
+            <input id="salesConnect" type="number" min="0" placeholder="0">
+          </div>
+          <div class="field">
+            <label>TIPS</label>
+            <input id="salesTips" type="number" min="0" placeholder="0">
+          </div>
+          <div class="field">
+            <label>TOTAL SALES</label>
+            <input id="salesTotal" readonly value="Rp 0">
+          </div>
+          <div class="field full-row">
+            <label>KETERANGAN</label>
+            <textarea id="salesNote" placeholder="Catatan jika diperlukan"></textarea>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-green" onclick="saveSales()">Simpan Sales</button>
+          <button class="btn btn-light" onclick="resetSales()">Reset</button>
+        </div>
+      </div>
+    </section>
+
+      <div class="card" style="margin-top:16px"><div class="card-head"><div><h3>📋 History Sales</h3><div class="small">Seluruh history input Sales untuk store ini.</div></div><button class="btn btn-light" onclick="loadSalesHistory()">↻ Refresh</button></div><div class="table-wrap"><table style="min-width:1000px"><thead><tr><th>TANGGAL</th><th>DINE IN</th><th>DELIVERY</th><th>TAKE AWAY</th><th>CONNECT / BO</th><th>TIPS</th><th>TOTAL SALES</th><th>KETERANGAN</th><th>INPUT BY</th></tr></thead><tbody id="salesHistoryBody"></tbody></table></div></div>
+    </section>
+
+    <section id="page-waste" class="page-section hidden">
+      <div class="hero">
+        <h2>♻️ Waste Dashboard</h2>
+        <p>Data dibaca langsung dari Waste Control V2.8 perusahaan. Store hanya dapat melihat data.</p>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="icon">♻️</div>
+          <div class="label">TOTAL WASTE PERIODE TERBARU</div>
+          <div id="wtWasteTotal" class="value">0</div>
+        </div>
+        <div class="stat">
+          <div class="icon">📦</div>
+          <div class="label">ITEM WASTE</div>
+          <div id="wtWasteItems" class="value">0</div>
+        </div>
+        <div class="stat">
+          <div class="icon">🧾</div>
+          <div class="label">TRANSAKSI / ITEM</div>
+          <div id="wtWasteTransactions" class="value">0</div>
+        </div>
+        <div class="stat">
+          <div class="icon">📅</div>
+          <div class="label">PERIODE TERBARU</div>
+          <div id="wtWastePeriod" class="value" style="font-size:14px">-</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:16px">
+        <div class="card-head">
+          <div>
+            <h3>🔎 Filter Waste</h3>
+            <div class="small">AM dapat memilih store. User Store otomatis melihat store sendiri.</div>
+          </div>
+          <button class="btn btn-light" onclick="loadWasteDashboard()">↻ Refresh</button>
+        </div>
+        <div class="form-grid">
+          <div class="field">
+            <label>STORE</label>
+            <select id="wtWasteStore" onchange="loadWasteDashboard()"></select>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid" style="margin-top:16px">
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h3>🏆 TOP 10 WASTE</h3>
+              <div class="small">Item dengan total Waste terbesar pada periode terbaru.</div>
+            </div>
+          </div>
+          <div id="wtWasteTop10"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h3>⚠️ FREQUENT WASTE</h3>
+              <div class="small">Item yang paling sering muncul dalam beberapa periode.</div>
+            </div>
+          </div>
+          <div id="wtWasteFrequent"></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:16px">
+        <div class="card-head">
+          <div>
+            <h3>📋 Waste Periode Terbaru</h3>
+            <div id="wtWasteTableInfo" class="small">-</div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table style="min-width:900px">
+            <thead>
+              <tr>
+                <th>KODE</th>
+                <th>NAMA BARANG</th>
+                <th>SATUAN</th>
+                <th>STORE</th>
+                <th>TOTAL WASTE</th>
+              </tr>
+            </thead>
+            <tbody id="wtWasteLatestBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:16px"><div class="card-head"><div><h3>📋 History Waste</h3><div class="small">Seluruh history Waste dari Waste Control untuk store ini.</div></div><button class="btn btn-light" onclick="loadWasteHistory()">↻ Refresh</button></div><div class="table-wrap"><table style="min-width:1000px"><thead><tr><th>PERIODE</th><th>KODE</th><th>NAMA BARANG</th><th>SATUAN</th><th>TOTAL WASTE</th><th>STORE</th></tr></thead><tbody id="wasteHistoryBody"></tbody></table></div></div>
+
+      <div class="card" style="margin-top:16px">
+        <div class="card-head">
+          <div>
+            <h3>🛡️ Hak Akses</h3>
+            <div class="small">Input Waste tetap dilakukan pada link Waste Control perusahaan. WT AM hanya membaca data.</div>
+          </div>
+          <span class="badge badge-done">VIEW ONLY</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="page-maintenance" class="page-section hidden">
+      <div class="hero">
+        <h2>🔧 Maintenance Ticket</h2>
+        <p>Ticket perbaikan/kerusakan. No SC diinput manual sesuai nomor dari sistem perusahaan.</p>
+      </div>
+
+      <div class="card">
+        <h3>➕ Buat Maintenance Ticket</h3>
+        <div class="form-grid">
+          <div class="field">
+            <label>NO SC *</label>
+            <input id="mtNoSC" placeholder="Input No SC dari sistem perusahaan">
+          </div>
+          <div class="field">
+            <label>TANGGAL INPUT</label>
+            <input id="mtInputDate" type="date">
+          </div>
+          <div class="field">
+            <label>TANGGAL KEJADIAN</label>
+            <input id="mtIncidentDate" type="date">
+          </div>
+          <div class="field">
+            <label>STORE</label>
+            <input id="mtStore" readonly>
+          </div>
+          <div class="field">
+            <label>KATEGORI</label>
+            <select id="mtCategory">
+              <option>Equipment</option>
+              <option>AC</option>
+              <option>Chiller / Freezer</option>
+              <option>POS / IT</option>
+              <option>Electrical</option>
+              <option>Plumbing</option>
+              <option>Furniture</option>
+              <option>Building</option>
+              <option>Internet</option>
+              <option>Other</option>
             </select>
           </div>
           <div class="field">
-            <label>Area</label>
-            <input id="area" placeholder="Contoh: Front Area / Back Area">
+            <label>ITEM / ASSET</label>
+            <input id="mtAsset" placeholder="Contoh: Chiller 1">
+          </div>
+          <div class="field">
+            <label>JENIS KERUSAKAN</label>
+            <input id="mtDamage" placeholder="Contoh: Tidak mencapai suhu">
+          </div>
+          <div class="field">
+            <label>PRIORITAS</label>
+            <select id="mtPriority">
+              <option>LOW</option>
+              <option selected>MEDIUM</option>
+              <option>HIGH</option>
+              <option>CRITICAL</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>TEKNISI / VENDOR</label>
+            <input id="mtVendor" placeholder="Opsional">
+          </div>
+          <div class="field full-row">
+            <label>KETERANGAN KERUSAKAN</label>
+            <textarea id="mtNote" placeholder="Jelaskan kondisi kerusakan"></textarea>
+          </div>
+          <div class="field full-row">
+            <label>FOTO BEFORE</label>
+            <div class="filebox">
+              <input id="mtBefore" type="file" accept="image/*" onchange="previewFile(this,'mtBeforePreview')">
+              <div id="mtBeforePreview" class="preview"></div>
+            </div>
           </div>
         </div>
-        <div class="field">
-          <label>Tanggal</label>
-          <input id="date" type="date">
+        <button class="btn btn-peach" onclick="saveMaintenance()">Buat Ticket</button>
+      </div>
+
+      <div class="card" style="margin-top:16px">
+        <div class="card-head">
+          <h3>🔎 Cari Ticket berdasarkan No SC</h3>
+          <button class="btn btn-light" onclick="searchMaintenance()">Cari</button>
         </div>
+        <div style="display:flex;gap:8px">
+          <input id="searchSC" placeholder="Masukkan No SC">
+          <button class="btn btn-primary" onclick="searchMaintenance()">Cari</button>
+        </div>
+        <div id="maintenanceResult" style="margin-top:14px"></div>
+      </div>
+      <div class="card" style="margin-top:16px"><div class="card-head"><div><h3>📋 History Maintenance</h3><div class="small">Seluruh ticket Maintenance store ini.</div></div><button class="btn btn-light" onclick="loadMaintenanceHistory()">↻ Refresh</button></div><div class="table-wrap"><table style="min-width:1200px"><thead><tr><th>TGL INPUT</th><th>NO SC</th><th>STORE</th><th>KATEGORI</th><th>ASSET</th><th>KERUSAKAN</th><th>PRIORITAS</th><th>STATUS</th><th>TEKNISI/VENDOR</th><th>TGL SELESAI</th></tr></thead><tbody id="maintenanceHistoryBody"></tbody></table></div></div>
+    </section>
+
+    <section id="page-kpi" class="page-section hidden">
+      <div class="hero">
+        <h2>📊 KPI Store</h2>
+        <p>Upload foto dashboard KPI dari sistem perusahaan.</p>
+      </div>
+
+      <div class="card">
+        <div class="form-grid">
+          <div class="field">
+            <label>STORE</label>
+            <input id="kpiStore" readonly>
+          </div>
+          <div class="field">
+            <label>BULAN</label>
+            <select id="kpiMonth">
+              <option>JANUARY</option><option>FEBRUARY</option><option>MARCH</option>
+              <option>APRIL</option><option>MAY</option><option>JUNE</option>
+              <option>JULY</option><option>AUGUST</option><option>SEPTEMBER</option>
+              <option>OCTOBER</option><option>NOVEMBER</option><option>DECEMBER</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>TAHUN</label>
+            <input id="kpiYear" type="number">
+          </div>
+          <div class="field full-row">
+            <label>KETERANGAN</label>
+            <textarea id="kpiNote" placeholder="Keterangan KPI"></textarea>
+          </div>
+          <div class="field full-row">
+            <label>FOTO KPI *</label>
+            <div class="filebox">
+              <input id="kpiPhoto" type="file" accept="image/*" onchange="previewFile(this,'kpiPreview')">
+              <div id="kpiPreview" class="preview"></div>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-purple" onclick="saveKPI()">Upload KPI</button>
+      </div>
+
+      <div class="card" style="margin-top:16px"><div class="card-head"><div><h3>📋 History KPI</h3><div class="small">Seluruh history upload KPI store ini.</div></div><button class="btn btn-light" onclick="loadKPIHistory()">↻ Refresh</button></div><div class="table-wrap"><table style="min-width:900px"><thead><tr><th>TIMESTAMP</th><th>BULAN</th><th>TAHUN</th><th>TGL UPLOAD</th><th>KETERANGAN</th><th>FILE</th><th>UPLOAD BY</th></tr></thead><tbody id="kpiHistoryBody"></tbody></table></div></div>
+    </section>
+
+    <section id="page-walkthrough" class="page-section hidden">
+      <div class="hero">
+        <h2>📝 Walkthrough</h2>
+        <p id="walkthroughHeroSub">Temuan operasional dan tindak lanjut.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <h3>🔎 Pencarian Store</h3>
+            <div id="walkthroughAccessNote" class="small"></div>
+          </div>
+          <button class="btn btn-light" onclick="loadWalkthrough()">↻ Refresh</button>
+        </div>
+
+        <div class="form-grid">
+          <div class="field full-row">
+            <label>STORE</label>
+            <select id="walkthroughStoreFilter" onchange="loadWalkthrough()">
+              <option value="">ALL STORE</option>
+              <option value="CITYWALK">CITYWALK</option>
+              <option value="CITRA TOWER">CITRA TOWER</option>
+              <option value="MENTENG">MENTENG</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:16px">
+        <div class="card-head">
+          <div>
+            <h3>📋 Daftar Temuan</h3>
+            <div id="walkthroughAccessNote" class="small"></div>
+          </div>
+          <button class="btn btn-light" onclick="loadWalkthrough()">Refresh</button>
+        </div>
+
+        <div id="walkthroughList">
+          <div class="empty">Memuat data...</div>
+        </div>
+      </div>
+
+      <div id="walkthroughDetail" class="card hidden" style="margin-top:16px"></div>
+    </section>
+
+    <section id="page-smallware" class="page-section hidden">
+      <div class="hero">
+        <h2>🍴 Smallware Control</h2>
+        <p id="swHeroSub">Request, approval, history, dan frequency Smallware.</p>
+      </div>
+
+      <div class="stats" style="margin-bottom:16px">
+        <div class="stat">
+          <div class="icon">📋</div>
+          <div class="label">TOTAL REQUEST</div>
+          <div id="swStatTotal" class="value">0</div>
+        </div>
+        <div class="stat">
+          <div class="icon">⏳</div>
+          <div class="label">PENDING</div>
+          <div id="swStatPending" class="value">0</div>
+        </div>
+        <div class="stat">
+          <div class="icon">✅</div>
+          <div class="label">APPROVED</div>
+          <div id="swStatApproved" class="value">0</div>
+        </div>
+        <div class="stat">
+          <div class="icon">🏁</div>
+          <div class="label">COMPLETED</div>
+          <div id="swStatCompleted" class="value">0</div>
+        </div>
+      </div>
+
+      <div class="nav" style="padding-bottom:14px">
+        <button id="swTabRequest" class="active" onclick="showSmallwareTab('request')">➕ Request Baru</button>
+        <button id="swTabHistory" onclick="showSmallwareTab('history')">📋 History</button>
+        <button id="swTabFrequency" onclick="showSmallwareTab('frequency')">📈 Frequency</button>
+      </div>
+
+      <div id="swPanelRequest" class="card">
+        <div class="card-head">
+          <div>
+            <h3>➕ Request Smallware Baru</h3>
+            <div class="small">Nama Smallware diketik manual. Dropdown Smallware tidak digunakan.</div>
+          </div>
+          <span class="badge badge-progress">PENDING APPROVAL</span>
+        </div>
+
+        <div class="form-grid">
+          <div class="field">
+            <label>STORE</label>
+            <input id="swStore" readonly>
+          </div>
+          <div class="field">
+            <label>TANGGAL REQUEST *</label>
+            <input id="swDate" type="date">
+          </div>
+          <div class="field full-row">
+            <label>NAMA SMALLWARE *</label>
+            <input id="swName" placeholder="Ketik nama Smallware" autocomplete="off">
+          </div>
+          <div class="field">
+            <label>QTY REQUEST *</label>
+            <input id="swQty" type="number" min="1" step="1" placeholder="0">
+          </div>
+          <div class="field">
+            <label>JENIS REQUEST *</label>
+            <select id="swType" onchange="toggleSmallwarePhoto()">
+              <option value="">Pilih jenis request</option>
+              <option>REPLACEMENT - RUSAK</option>
+              <option>REPLACEMENT - PECAH</option>
+              <option>REPLACEMENT - HILANG</option>
+              <option>ADDITIONAL - PENAMBAHAN</option>
+            </select>
+          </div>
+          <div class="field full-row">
+            <label>FOTO KERUSAKAN <span id="swPhotoMark" style="visibility:hidden">*</span></label>
+            <div class="filebox">
+              <input id="swPhoto" type="file" accept="image/*" onchange="previewFile(this,'swPhotoPreview')">
+              <div id="swPhotoPreview" class="preview"></div>
+            </div>
+            <div class="small" id="swPhotoHelp">Wajib untuk Replacement - Rusak / Pecah.</div>
+          </div>
+          <div class="field full-row">
+            <label>KETERANGAN</label>
+            <textarea id="swNote" placeholder="Jelaskan kebutuhan / kondisi Smallware"></textarea>
+          </div>
+        </div>
+
         <div class="actions">
-          <button class="btn btn-primary" onclick="startNew()">＋ Mulai Walkthrough</button>
-          <button class="btn btn-light" onclick="resetForm()">Reset</button>
+          <button class="btn btn-purple" onclick="saveSmallwareRequestUI()">Kirim Request</button>
+          <button class="btn btn-light" onclick="resetSmallwareForm()">Reset</button>
         </div>
       </div>
-    </div>
 
-    <div id="historyPanel" class="hidden"></div>
-
-    <div class="guide-card">
-      <h3>💡 Panduan Singkat</h3>
-      <div class="guide-grid">
-        <div><i>1</i><b>🏪</b><span>Pilih Store,<br>Area & Tanggal</span></div>
-        <div><i>2</i><b>📷</b><span>Tambah Temuan<br>Foto & Keterangan</span></div>
-        <div><i>3</i><b>☑</b><span>Simpan sebagai<br>Draft / Selesaikan</span></div>
-        <div><i>4</i><b>📄</b><span>Export<br>Laporan Word</span></div>
-      </div>
-      <div class="guide-note">ⓘ Foto akan otomatis disimpan di perangkat. Kamu bisa menyimpan sebagai draft dan melanjutkan nanti tanpa kehilangan data.</div>
-    </div>
-  </section>
-
-  <section id="editorView" class="hidden">
-    <div class="card active-report-card">
-      <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
-        <div>
-          <h3 class="section-title" style="margin-bottom:4px">Walkthrough Aktif</h3>
-          <div class="muted" id="editorInfo"></div>
+      <div id="swPanelHistory" class="card hidden">
+        <div class="card-head">
+          <div>
+            <h3>📋 History Request Smallware</h3>
+            <div class="small" id="swHistoryNote"></div>
+          </div>
+          <button class="btn btn-light" onclick="loadSmallware()">Refresh</button>
         </div>
-        <span id="editorBadge" class="badge badge-draft">DRAFT</span>
-      </div>
-      <div class="actions" style="margin-top:13px">
-        <button class="btn btn-blue" onclick="addFinding()">＋ Tambah Temuan</button>
-        <button class="btn btn-orange" onclick="openFindingsPreview()">👁 Preview Temuan</button>
-        <button class="btn btn-green" onclick="finishReport()">✓ Selesai</button><button class="btn btn-blue" onclick="syncActiveWalkthrough()">☁ Sync WT AM</button>
-        <button class="btn btn-light" onclick="saveAndHome()">Simpan & Keluar</button>
-      </div>
-    </div>
 
-    <div id="findingsList"></div>
+        <div class="filters" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+          <input id="swSearch" placeholder="Cari ID / Store / Smallware / Jenis" oninput="renderSmallwareHistory()">
+          <select id="swStatusFilter" onchange="renderSmallwareHistory()">
+            <option value="">Semua Status</option>
+            <option>PENDING</option>
+            <option>APPROVED</option>
+            <option>ORDERED</option>
+            <option>RECEIVED</option>
+            <option>COMPLETED</option>
+            <option>REJECTED</option>
+          </select>
+        </div>
 
-    <div class="card add-more-card">
-      <button class="btn btn-blue btn-full" onclick="addFinding()">＋ TAMBAH TEMUAN LAGI</button>
-      <div class="muted" style="text-align:center;margin-top:8px">Tidak ada batas jumlah temuan. Tambahkan sebanyak yang diperlukan.</div>
-    </div>
-
-    <div id="editorBottomActions" class="card hidden">
-      <div class="actions">
-        <button class="btn btn-orange" onclick="openPreview()">👁 Preview Laporan</button>
-        <button class="btn btn-blue" onclick="exportWord()">⬇ Export Word</button>
+        <div id="swHistoryTable"></div>
       </div>
-    </div>
-  </section>
-</main>
+
+      <div id="swPanelFrequency" class="card hidden">
+        <div class="card-head">
+          <div>
+            <h3>📈 Frequency Smallware</h3>
+            <div class="small">Frekuensi berdasarkan nama Smallware yang diketik pada request.</div>
+          </div>
+          <button class="btn btn-light" onclick="loadSmallwareFrequency()">Refresh</button>
+        </div>
+        <div id="swFrequencyTable"></div>
+      </div>
+
+      <div id="swDetail" class="card hidden" style="margin-top:16px"></div>
+    </section>
+
+  </main>
 </div>
-
-
-<!-- Finding input is now inline inside the active walkthrough. No limit on findings. -->
-
-
-<div id="findingsPreviewModal" class="modal hidden">
-  <div class="modal-card">
-    <div class="modal-head">
-      <h2>Preview Temuan</h2>
-      <button class="close" onclick="closeFindingsPreview()">✕</button>
-    </div>
-    <div id="findingsPreviewContent"></div>
-    <div class="actions" style="margin-top:12px">
-      <button class="btn btn-light" onclick="closeFindingsPreview()">Kembali Edit</button>
-      <button class="btn btn-green" onclick="closeFindingsPreview();finishReport()">✓ Selesai Walkthrough</button>
-    </div>
-  </div>
-</div>
-
-<div id="previewModal" class="modal hidden">
-  <div class="modal-card">
-    <div class="modal-head">
-      <h2>Preview Laporan</h2>
-      <div class="actions" style="width:auto">
-        <button class="btn btn-blue" onclick="exportWord()">⬇ Word</button>
-        <button class="close" onclick="closePreview()">✕</button>
-      </div>
-    </div>
-    <div class="preview-wrap"><div id="wordPreview" class="word-page"></div></div>
-  </div>
-</div>
-
-<div id="toast" class="toast"></div>
 
 <script>
-
-/* ===== WT AM DATABASE SYNC - V5 BEFORE ONLY =====
-   Set this to the deployed WT AM Backend Web App URL.
+/* =========================================================
+   KONFIGURASI
+   =========================================================
+   Setelah Apps Script selesai dideploy sebagai Web App,
+   masukkan URL /exec di bawah ini.
 */
+const CONFIG = {
+  APP_NAME: 'WT AM AREA RENALDI',
+  MODE: 'APPS_SCRIPT_WEBAPP'
+};
+
+const state = {
+  user: null,
+  dashboard: null
+};
+
+const $ = id => document.getElementById(id);
+
+function showLoading(show){
+  $('loading').classList.toggle('hidden', !show);
+}
+
+function toast(message, type='normal'){
+  const el = $('toast');
+  el.textContent = message;
+  el.classList.remove('hidden');
+  clearTimeout(window.__toast);
+  window.__toast = setTimeout(()=>el.classList.add('hidden'), 3500);
+}
+
+function todayISO(){
+  const d = new Date();
+  const local = new Date(d.getTime()-d.getTimezoneOffset()*60000);
+  return local.toISOString().slice(0,10);
+}
+
+function formatRupiah(n){
+  return new Intl.NumberFormat('id-ID',{
+    style:'currency',
+    currency:'IDR',
+    maximumFractionDigits:0
+  }).format(Number(n)||0);
+}
+
+function storeOfUser(){
+  // Nama store untuk tampilan website.
+  return state.user?.store || '';
+}
+
+function storeApiOfUser(){
+  // Nama/store key yang dikirim ke backend/database.
+  // Backend menggunakan key resmi: CITYWALK, CITRA TOWER, MENTENG.
+  // Mendukung nama display, variasi penulisan, dan ID store.
+  const raw = String(state.user?.store || '').trim().toUpperCase();
+  const key = raw.replace(/[^A-Z0-9]+/g,' ').replace(/\s+/g,' ').trim();
+
+  // MENTENG
+  if(
+    key === 'MENTENG' ||
+    key === 'SSS MENTENG' ||
+    key === 'SSS MTG' ||
+    key === 'SSS-MTG' ||
+    key.includes('MENTENG')
+  ) return 'MENTENG';
+
+  // CITYWALK
+  if(
+    key === 'CITYWALK' ||
+    key === 'SKS CITYWALK' ||
+    key === 'SKS CITY WALK' ||
+    key === 'SKS CW' ||
+    key === 'SKS-CW' ||
+    key.includes('CITYWALK') ||
+    key.includes('CITY WALK')
+  ) return 'CITYWALK';
+
+  // CITRA TOWER
+  if(
+    key === 'CITRA TOWER' ||
+    key === 'SKS CITRA TOWER' ||
+    key === 'SS CITRA TOWER' ||
+    key === 'SKS CT' ||
+    key === 'SKS-CT' ||
+    key.includes('CITRA TOWER')
+  ) return 'CITRA TOWER';
+
+  return raw;
+}
+
+function isAM(){
+  const role = String(state.user?.role||'').toUpperCase();
+  return role === 'AM' || role === 'AREA MANAGER' || role === 'ADMIN';
+}
+
 const WT_AM_API_URL = 'https://script.google.com/macros/s/AKfycbynW54Eknu6qCi77Z-tRZdF26Pa3xfpylqbtd1fmFAUcvK-pxPq4fP2I57CkM7l5jhuKg/exec';
 
-async function syncWalkthroughToWTAM(report){
-  if(!report || report.status!=='SELESAI'){
-    return {success:false,message:'Walkthrough belum selesai.'};
-  }
-
-  if(!WT_AM_API_URL || WT_AM_API_URL.includes('PASTE_')){
-    return {success:false,message:'URL backend WT AM belum diisi.'};
-  }
-
-  const findings = Array.isArray(report.findings) ? report.findings : [];
-  if(!findings.length){
-    return {success:false,message:'Tidak ada temuan.'};
-  }
-
-  const results=[];
-
-  for(const f of findings){
-    try{
-      /* Temuan yang sudah memiliki dbId tidak dikirim ulang,
-         agar tidak membuat data duplikat. */
-      if(f.dbId){
-        results.push({
-          success:true,
-          id:f.dbId,
-          message:'Temuan sudah pernah tersinkron.'
-        });
-        continue;
-      }
-
-      const payload={
-        action:'saveWalkthrough',
-        role:'AM',
-        tanggal:report.date,
-        store:report.store,
-        area:report.area,
-        kategori:f.kategori || '',
-        temuan:f.desc || '',
-        prioritas:f.prioritas || 'MEDIUM',
-        actionPlan:f.actionPlan || '',
-        pic:f.pic || '',
-        dueDate:f.dueDate || '',
-        status:'OPEN',
-        keterangan:f.resultDesc || '',
-        fotoBefore:f.photo || '',
-        mimeTypeBefore:'image/jpeg',
-        inputBy:'WALKTHROUGH GITHUB'
-      };
-
-      const res=await fetch(WT_AM_API_URL,{
-        method:'POST',
-        headers:{'Content-Type':'text/plain;charset=utf-8'},
-        body:JSON.stringify(payload)
-      });
-
-      const json=await res.json();
-
-      if(json && json.id){
-        f.dbId=json.id;
-        f.dbFotoBefore=json.fotoBefore || '';
-      }
-
-      results.push(json || {
-        success:false,
-        message:'Response backend kosong.'
-      });
-
-    }catch(err){
-      results.push({
-        success:false,
-        message:err.message || 'Gagal mengirim data.'
-      });
+function buildApiUrl(action, params={}){
+  const url = new URL(WT_AM_API_URL);
+  url.searchParams.set('action', action);
+  Object.keys(params || {}).forEach(function(key){
+    const value = params[key];
+    if(value !== undefined && value !== null && value !== ''){
+      url.searchParams.set(key, String(value));
     }
-  }
-
-  const ok=results.filter(x=>x && x.success).length;
-
-  if(ok===findings.length){
-    report.syncedToWTAM=true;
-    report.syncedAt=new Date().toISOString();
-    persist();
-
-    return {
-      success:true,
-      message:`${ok} temuan + foto before berhasil dikirim ke WT AM.`
-    };
-  }
-
-  return {
-    success:false,
-    message:`${ok}/${findings.length} temuan berhasil dikirim ke WT AM. Cek koneksi backend/deployment.`,
-    results
-  };
+  });
+  return url.toString();
 }
 
+async function apiGet(action, params={}){
+  const url = buildApiUrl(action, params);
 
-async function syncActiveWalkthrough(){
-  if(!active) return toast('Tidak ada walkthrough aktif');
-  if(active.status!=='SELESAI') return toast('Selesaikan walkthrough terlebih dahulu');
-  toast('Mengirim temuan ke WT AM...');
-  const r=await syncWalkthroughToWTAM(active);
-  toast(r.message || 'Proses sinkronisasi selesai');
-  renderEditor();
-}
+  const response = await fetch(url, {
+    method:'GET',
+    mode:'cors',
+    cache:'no-store'
+  });
 
-const KEY='WALKTHROUGH_CONTROL_V1';
-let reports=loadReports();
-let active=null;
-let editingFindingId=null;
-let tempPhotos={finding:null,result:null};
-
-function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
-function today(){
- const d=new Date(), z=n=>String(n).padStart(2,'0');
- return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate());
-}
-document.getElementById('date').value=today();
-
-function loadReports(){
- try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]}
-}
-function persist(){
+  const text = await response.text();
+  let result;
   try{
-    localStorage.setItem(KEY,JSON.stringify(reports));
-    updateStats();
-    return true;
-  }catch(err){
-    updateStats();
-    toast('Penyimpanan browser penuh. Kurangi ukuran/jumlah foto.');
-    return false;
+    result = JSON.parse(text);
+  }catch(error){
+    throw new Error('Response backend tidak valid.');
   }
-}
-function updateStats(){
- document.getElementById('statDraft').textContent=reports.filter(x=>x.status==='DRAFT').length;
- document.getElementById('statDone').textContent=reports.filter(x=>x.status==='SELESAI').length;
- document.getElementById('statFindings').textContent=reports.reduce((n,x)=>n+(x.findings?.length||0),0);
-}
-updateStats();
 
-function toast(msg){
- const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
- clearTimeout(window.__toast);window.__toast=setTimeout(()=>t.classList.remove('show'),2200);
+  if(!response.ok || (result && result.success === false)){
+    throw new Error((result && result.message) || 'Request gagal.');
+  }
+
+  return result;
 }
-function switchTab(tab){
- document.getElementById('tabNew').classList.toggle('active',tab==='new');
- document.getElementById('tabHistory').classList.toggle('active',tab==='history');
- document.getElementById('newPanel').classList.toggle('hidden',tab!=='new');
- document.getElementById('historyPanel').classList.toggle('hidden',tab!=='history');
- if(tab==='history')renderHistory();
-}
-function resetForm(){
- document.getElementById('store').value='';
- document.getElementById('area').value='';
- document.getElementById('date').value=today();
-}
-function startNew(){
- const store=document.getElementById('store').value;
- const area=document.getElementById('area').value.trim();
- const date=document.getElementById('date').value;
- if(!store)return toast('Pilih store terlebih dahulu');
- if(!area)return toast('Isi area terlebih dahulu');
- if(!date)return toast('Pilih tanggal');
- active={id:uid(),store,area,date,status:'DRAFT',createdAt:new Date().toISOString(),findings:[]};
- reports.unshift(active);
- persist();
- openEditor();
- addFinding();
-}
-function openEditor(){
- document.getElementById('homeView').classList.add('hidden');
- document.getElementById('editorView').classList.remove('hidden');
- renderEditor();
-}
-function renderEditor(){
- if(!active)return;
- document.getElementById('editorInfo').textContent=`${active.store} • ${active.area} • ${formatDate(active.date)} • ${active.findings.length} temuan${active.syncedToWTAM?' • ✓ SYNC WT AM':''}`;
- const badge=document.getElementById('editorBadge');
- badge.textContent=active.status;
- badge.className='badge '+(active.status==='SELESAI'?'badge-done':'badge-draft');
- document.getElementById('editorBottomActions').classList.toggle('hidden',active.status!=='SELESAI');
 
- const list=document.getElementById('findingsList');
- if(!active.findings.length){
-   list.innerHTML=`<div class="card empty">
-      <div class="emoji">📋</div>
-      <b>Belum ada temuan</b>
-      <div class="muted">Tekan “Tambah Temuan” untuk membuat kartu temuan pertama.</div>
-   </div>`;
-   return;
- }
+async function apiPost(payload){
+  const response = await fetch(WT_AM_API_URL, {
+    method:'POST',
+    mode:'cors',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body:JSON.stringify(payload)
+  });
 
- list.innerHTML=active.findings.map((f,i)=>`
- <div class="card finding inline-finding" id="finding-${f.id}">
-   <div class="finding-head">
-     <div><div class="finding-title">TEMUAN #${i+1}</div><div class="muted">Input temuan & hasil perbaikan</div></div>
-     <button class="btn btn-red small-btn" onclick="removeFinding('${f.id}')">🗑 Hapus</button>
-   </div>
+  const text = await response.text();
+  let result;
+  try{
+    result = JSON.parse(text);
+  }catch(error){
+    throw new Error('Response backend tidak valid.');
+  }
 
-   <div class="finding-input-grid">
-     <div class="input-photo-panel">
-       <div class="photo-label">📷 FOTO TEMUAN</div>
-       ${f.photo ? `<div class="editable-photo"><img src="${f.photo}" alt="Foto temuan"><button class="photo-delete" onclick="clearFindingPhoto('${f.id}','finding')">✕</button></div>`
-                 : `<button class="photo-upload-box" onclick="chooseFindingPhoto('${f.id}','finding')"><span>📷</span><b>Tambah Foto</b><small>Ambil dari kamera / galeri</small></button>`}
-       <input id="finding-file-${f.id}" type="file" accept="image/*" capture="environment" class="hidden" onchange="handleFindingPhoto('${f.id}','finding',this)">
-     </div>
+  if(!response.ok || (result && result.success === false)){
+    throw new Error((result && result.message) || 'Request gagal.');
+  }
 
-     <div class="input-text-panel">
-       <label>KETERANGAN TEMUAN</label>
-       <textarea placeholder="Tuliskan temuan di sini..." oninput="updateFindingText('${f.id}','desc',this.value)">${esc(f.desc||'')}</textarea>
-     </div>
-   </div>
-
-   <div class="finding-divider"><span>HASIL / TINDAKAN</span></div>
-
-   <div class="finding-input-grid single-result">
-     <div class="input-text-panel">
-       <label>KETERANGAN HASIL / TINDAKAN</label>
-       <textarea placeholder="Tuliskan tindakan atau hasil perbaikan..." oninput="updateFindingText('${f.id}','resultDesc',this.value)">${esc(f.resultDesc||'')}</textarea>
-     </div>
-   </div>
- </div>`).join('');
+  return result;
 }
 
 
-function addFinding(){
-  if(!active){
-    toast('Tidak ada walkthrough aktif');
+async function login(){
+  const username = $('loginUsername').value.trim();
+  const password = $('loginPassword').value.trim();
+
+  if(!username || !password){
+    toast('Username dan password wajib diisi.');
     return;
   }
 
-  active.findings.push({
-    id: uid(),
-    photo: null,
-    desc: '',
-    resultDesc: '',
-    updatedAt: new Date().toISOString()
+  showLoading(true);
+  try{
+    const result = await apiPost({
+      action:'login',
+      username,
+      password
+    });
+
+    if(!result.success){
+      throw new Error(result.message||'Login gagal.');
+    }
+
+    if(String(result.user?.role||'').toUpperCase() !== 'STORE'){
+      throw new Error('Website ini khusus untuk akun STORE.');
+    }
+
+    state.user = result.user;
+    sessionStorage.setItem('WT_AM_USER',JSON.stringify(state.user));
+
+    $('loginView').classList.add('hidden');
+    $('appView').classList.remove('hidden');
+
+    initAfterLogin();
+    toast('Login berhasil.');
+  }catch(err){
+    toast(err.message);
+  }finally{
+    showLoading(false);
+  }
+}
+
+function logout(){
+  sessionStorage.removeItem('WT_AM_USER');
+  state.user=null;
+  $('appView').classList.add('hidden');
+  $('loginView').classList.remove('hidden');
+}
+
+function initAfterLogin(){
+  const u = state.user;
+  $('userPill').textContent =
+    `${u.nama||u.username} · ${u.role||'USER'}${u.store && u.store!=='ALL' ? ' · '+u.store : ''}`;
+
+  const store = isAM() ? 'ALL STORE' : storeOfUser();
+
+  $('welcomeTitle').textContent =
+    isAM() ? 'Dashboard Area Manager' : `Dashboard ${store}`;
+
+  $('welcomeSub').textContent =
+    isAM()
+      ? 'Ringkasan CityWalk, Citra Tower, dan Menteng.'
+      : `Ringkasan aktivitas ${store}.`;
+
+  $('salesStore').value = store;
+  $('mtStore').value = store;
+  $('kpiStore').value = store;
+
+  const d = todayISO();
+  $('salesDate').value = d;
+  $('mtInputDate').value = d;
+  $('mtIncidentDate').value = d;
+  $('kpiYear').value = new Date().getFullYear();
+
+  $('kpiMonth').value =
+    new Intl.DateTimeFormat('en-US',{month:'long'}).format(new Date()).toUpperCase();
+
+  showPage('dashboard');
+  loadDashboard();
+}
+
+function showPage(page){
+  document.querySelectorAll('.page-section').forEach(x=>x.classList.add('hidden'));
+  const target = $('page-'+page);
+  if(target) target.classList.remove('hidden');
+
+  document.querySelectorAll('#nav button').forEach(btn=>{
+    btn.classList.toggle('active',btn.dataset.page===page);
   });
 
-  syncActive();
-  persist();
-  renderEditor();
-
-  setTimeout(()=>{
-    const cards = document.querySelectorAll('.inline-finding');
-    const last = cards[cards.length - 1];
-    if(last) last.scrollIntoView({behavior:'smooth', block:'center'});
-  }, 100);
+  if(page==='dashboard') loadDashboard();
+  if(page==='sales'){ $('salesDate').value=todayISO(); $('salesStore').value=storeOfUser(); loadSalesHistory(); }
+  if(page==='waste'){ initWastePage(); loadWasteHistory(); }
+  if(page==='maintenance'){ $('mtStore').value=storeOfUser(); loadMaintenanceHistory(); }
+  if(page==='kpi'){ $('kpiStore').value=storeOfUser(); loadKPIHistory(); }
+  if(page==='walkthrough') initWalkthrough();
+  if(page==='smallware') initSmallware();
+  if(page==='waste') initWastePage();
 }
 
-function removeFinding(id){
-  if(!active) return;
-  if(!confirm('Hapus temuan ini?')) return;
+async function loadDashboard(){
+  showLoading(true);
+  try{
+    if(isAM()){
+      const result = await apiGet('amDashboard');
+      renderAMDashboard(result.data||[]);
+    }else{
+      const result = await apiGet('dashboard',{store:storeApiOfUser()});
+      state.dashboard=result;
+      renderStoreDashboard(result);
+    }
 
-  active.findings = active.findings.filter(f => f.id !== id);
-  syncActive();
-  persist();
-  renderEditor();
-  toast('Temuan dihapus');
+    const recent = await apiGet('recentMaintenance',{
+      store:isAM()?'':storeApiOfUser(),
+      limit:5
+    });
+    renderRecentMaintenance(recent.data||[]);
+    await loadSmallwareDashboardMini();
+    await loadExternalWasteDashboard(true);
+  }catch(err){
+    toast(err.message);
+  }finally{
+    showLoading(false);
+  }
 }
 
-function updateFindingText(id, field, value){
-  if(!active) return;
 
-  const f = active.findings.find(x => x.id === id);
-  if(!f) return;
+async function loadSmallwareDashboardMini(){
+  if(!state.user || !$('smallwareDashboardMini')) return;
 
-  f[field] = value;
-  f.updatedAt = new Date().toISOString();
-  syncActive();
-  persist();
+  try{
+    const result = await apiGet('smallware',{
+      store:isAM() ? '' : storeApiOfUser(),
+      limit:5,
+      role:state.user.role || 'STORE'
+    });
+    const rows = result.data || [];
+
+    if(!rows.length){
+      $('smallwareDashboardMini').innerHTML='<div class="empty">Belum ada request Smallware.</div>';
+      return;
+    }
+
+    $('smallwareDashboardMini').innerHTML = `
+      <div class="table-wrap">
+        <table style="min-width:650px">
+          <thead><tr><th>STORE</th><th>SMALLWARE</th><th>QTY</th><th>STATUS</th></tr></thead>
+          <tbody>
+            ${rows.map(x=>`
+              <tr>
+                <td>${escapeHtml(x.store||'-')}</td>
+                <td>${escapeHtml(x.namaSmallware||'-')}</td>
+                <td>${escapeHtml(x.qtyRequest??'-')}</td>
+                <td>${smallwareStatusBadge(x.status)}</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>`;
+  }catch(e){
+    $('smallwareDashboardMini').innerHTML='<div class="empty">Smallware belum dapat dimuat.</div>';
+  }
 }
 
+function renderStoreDashboard(d){
+  $('amStoreCards').classList.add('hidden');
 
-function resizeImage(file, maxW=1000, quality=.72){
+  $('statSales').textContent = formatRupiah(d.sales?.totalSales);
+  $('statWaste').textContent = Number(d.waste?.totalQty||0).toLocaleString('id-ID');
+  $('statMaintenance').textContent = Number(d.maintenance?.open||0);
+  $('statKpi').textContent = Number(d.kpi?.uploadCount||0);
+
+  const latest = d.kpi?.latest;
+  $('kpiMini').innerHTML = latest
+    ? `<div class="kpi-status">
+         <div><b>✓ ${escapeHtml(latest.bulan||'')}</b><div class="small">${escapeHtml(latest.tahun||'')}</div></div>
+         <a class="photo-link" target="_blank" href="${escapeAttr(latest.url||'#')}">Lihat Foto</a>
+       </div>`
+    : `<div class="empty">Belum ada upload KPI.</div>`;
+}
+
+function renderAMDashboard(rows){
+  $('amStoreCards').classList.remove('hidden');
+
+  const totals = rows.reduce((a,r)=>{
+    a.sales += Number(r.sales?.totalSales||0);
+    a.waste += Number(r.waste?.totalQty||0);
+    a.open += Number(r.maintenance?.open||0);
+    a.kpi += Number(r.kpi?.uploadCount||0);
+    return a;
+  },{sales:0,waste:0,open:0,kpi:0});
+
+  $('statSales').textContent = formatRupiah(totals.sales);
+  $('statWaste').textContent = totals.waste.toLocaleString('id-ID');
+  $('statMaintenance').textContent = totals.open;
+  $('statKpi').textContent = totals.kpi;
+
+  $('amCards').innerHTML = rows.map(r=>`
+    <div class="card" style="box-shadow:none;background:#fbfcfe">
+      <h3>🏪 ${escapeHtml(r.store)}</h3>
+      <div class="small">Sales</div>
+      <div style="font-size:20px;font-weight:800">${formatRupiah(r.sales?.totalSales)}</div>
+      <div style="margin-top:10px" class="small">Waste</div>
+      <div>${Number(r.waste?.totalQty||0).toLocaleString('id-ID')}</div>
+      <div style="margin-top:10px" class="small">Maintenance Open</div>
+      <div>${Number(r.maintenance?.open||0)}</div>
+      <div style="margin-top:10px" class="small">KPI Upload</div>
+      <div>${Number(r.kpi?.uploadCount||0)}</div>
+    </div>
+  `).join('');
+
+  $('kpiMini').innerHTML = rows.map(r=>`
+    <div class="kpi-status">
+      <span><b>${escapeHtml(r.store)}</b></span>
+      <span class="badge ${r.kpi?.uploadCount ? 'badge-done':'badge-open'}">
+        ${r.kpi?.uploadCount ? '✓ UPLOADED':'BELUM UPLOAD'}
+      </span>
+    </div>
+  `).join('');
+}
+
+function renderRecentMaintenance(rows){
+  if(!rows.length){
+    $('maintenanceMini').innerHTML='<div class="empty">Belum ada maintenance ticket.</div>';
+    return;
+  }
+
+  $('maintenanceMini').innerHTML = `
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>No SC</th><th>Store</th><th>Asset</th><th>Status</th></tr></thead>
+        <tbody>
+        ${rows.map(r=>`
+          <tr>
+            <td><b>${escapeHtml(r.noSC)}</b></td>
+            <td>${escapeHtml(r.store)}</td>
+            <td>${escapeHtml(r.itemAsset||'-')}</td>
+            <td>${statusBadge(r.status)}</td>
+          </tr>
+        `).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+function statusBadge(status){
+  const s=String(status||'').toUpperCase();
+  let c='badge-closed';
+  if(s==='OPEN') c='badge-open';
+  else if(s==='ON PROGRESS') c='badge-progress';
+  else if(s==='WAITING PART') c='badge-wait';
+  else if(s==='COMPLETED') c='badge-done';
+  return `<span class="badge ${c}">${escapeHtml(s||'-')}</span>`;
+}
+
+/* =====================================================
+   EXTERNAL WASTE CONNECTOR
+===================================================== */
+
+async function loadWasteDashboard(){
+  await loadExternalWasteDashboard(false);
+}
+
+function initWastePage(){
+  const select = $('wtWasteStore');
+  if(!select) return;
+
+  if(isAM()){
+    select.innerHTML = `
+      <option value="">ALL STORE</option>
+      <option value="CITYWALK">CITYWALK</option>
+      <option value="CITRA TOWER">CITRA TOWER</option>
+      <option value="MENTENG">MENTENG</option>`;
+  }else{
+    select.innerHTML = `<option value="${escapeAttr(storeOfUser())}">${escapeHtml(storeOfUser())}</option>`;
+  }
+
+  select.value = isAM() ? (select.value || '') : storeOfUser();
+  loadWasteDashboard();
+}
+
+async function loadExternalWasteDashboard(updateMainDashboard=false){
+  if(!state.user) return;
+  try{
+    const store = isAM() ? (($('wtWasteStore')?.value)||'') : storeApiOfUser();
+    const result = await apiGet('wasteDashboard',{
+      store,
+      role:state.user.role || 'STORE',
+      userStore:storeApiOfUser()
+    });
+
+    if(!result || !result.success) throw new Error(result?.message||'Waste gagal dimuat.');
+
+    if(updateMainDashboard){
+      const total = Number(result.summary?.totalWaste||0);
+      $('statWaste').textContent = total.toLocaleString('id-ID',{maximumFractionDigits:2});
+
+      if(isAM() && Array.isArray(result.byStore)){
+        const map={};
+        result.byStore.forEach(x=>map[x.store]=x.totalWaste);
+        document.querySelectorAll('#amCards .card').forEach(card=>{
+          const title=card.querySelector('h3');
+          if(!title) return;
+          const store=title.textContent.replace('🏪','').trim().toUpperCase();
+          const wasteLabel=[...card.querySelectorAll('.small')].find(x=>x.textContent.trim()==='Waste');
+          if(wasteLabel && wasteLabel.nextElementSibling){
+            wasteLabel.nextElementSibling.textContent=Number(map[store]||0).toLocaleString('id-ID',{maximumFractionDigits:2});
+          }
+        });
+      }
+    }
+
+    renderWasteDashboard(result);
+  }catch(err){
+    if(updateMainDashboard){
+      $('statWaste').textContent='-';
+    }
+    if($('wtWasteTop10')) toast('Waste: '+err.message);
+  }
+}
+
+function renderWasteDashboard(result){
+  if(!$('wtWasteTotal')) return;
+
+  const summary=result.summary||{};
+  $('wtWasteTotal').textContent=Number(summary.totalWaste||0).toLocaleString('id-ID',{maximumFractionDigits:2});
+  $('wtWasteItems').textContent=Number(summary.uniqueItems||0).toLocaleString('id-ID');
+  $('wtWasteTransactions').textContent=Number(summary.totalTransactions||0).toLocaleString('id-ID');
+  $('wtWastePeriod').textContent=summary.latestPeriod||'-';
+  $('wtWasteTableInfo').textContent=summary.latestPeriod
+    ? `Periode terbaru: ${summary.latestPeriod}`
+    : 'Belum ada data Waste.';
+
+  renderWasteTop10(result.top10||[]);
+  renderWasteFrequent(result.frequent||[]);
+  renderWasteLatest(result.latest||[]);
+}
+
+function renderWasteTop10(rows){
+  const el=$('wtWasteTop10');
+  if(!rows.length){
+    el.innerHTML='<div class="empty">Belum ada data Waste.</div>';
+    return;
+  }
+  const max=Math.max(...rows.map(x=>Number(x.waste)||0),1);
+  el.innerHTML=rows.map((x,i)=>`
+    <div class="kpi-status">
+      <div style="flex:1">
+        <div><b>#${i+1} · ${escapeHtml(x.name||'-')}</b></div>
+        <div class="small">${escapeHtml(x.code||'-')} · ${escapeHtml(x.unit||'-')}</div>
+        <div class="bar" style="margin-top:7px"><span style="display:block;width:${Math.max(5,(Number(x.waste||0)/max)*100)}%;height:100%;background:#8db6d8;border-radius:99px"></span></div>
+      </div>
+      <b>${Number(x.waste||0).toLocaleString('id-ID',{maximumFractionDigits:2})}</b>
+    </div>`).join('');
+}
+
+function renderWasteFrequent(rows){
+  const el=$('wtWasteFrequent');
+  if(!rows.length){
+    el.innerHTML='<div class="empty">Belum ada riwayat Waste yang cukup.</div>';
+    return;
+  }
+  el.innerHTML=rows.map((x,i)=>`
+    <div class="kpi-status">
+      <div>
+        <b>#${i+1} · ${escapeHtml(x.name||'-')}</b>
+        <div class="small">${escapeHtml(x.code||'-')} · ${escapeHtml(x.store||'-')}</div>
+      </div>
+      <div style="text-align:right">
+        <b>${Number(x.periods||0)} periode</b>
+        <div class="small">Total ${Number(x.totalWaste||0).toLocaleString('id-ID',{maximumFractionDigits:2})}</div>
+      </div>
+    </div>`).join('');
+}
+
+function renderWasteLatest(rows){
+  const body=$('wtWasteLatestBody');
+  if(!rows.length){
+    body.innerHTML='<tr><td colspan="5" class="empty">Belum ada data Waste.</td></tr>';
+    return;
+  }
+  body.innerHTML=rows.map(x=>`
+    <tr>
+      <td><b>${escapeHtml(x.kode||'-')}</b></td>
+      <td>${escapeHtml(x.namaBarang||'-')}</td>
+      <td>${escapeHtml(x.satuan||'-')}</td>
+      <td>${escapeHtml(x.storeName||'-')}</td>
+      <td><b>${Number(x.totalWaste||0).toLocaleString('id-ID',{maximumFractionDigits:2})}</b></td>
+    </tr>`).join('');
+}
+
+/* =========================================================
+   HISTORY STORE - SEMUA MENU
+========================================================= */
+async function loadSalesHistory(){if(!state.user)return;try{const r=await apiGet('history',{module:'sales',store:storeApiOfUser(),role:'STORE',limit:1000});const rows=r.data||[];$('salesHistoryBody').innerHTML=rows.length?rows.map(x=>`<tr><td>${escapeHtml(x.tanggal||'-')}</td><td>${formatRupiah(x.dineIn)}</td><td>${formatRupiah(x.delivery)}</td><td>${formatRupiah(x.takeAway)}</td><td>${formatRupiah(x.connectBO)}</td><td>${formatRupiah(x.tips)}</td><td><b>${formatRupiah(x.totalSales)}</b></td><td>${escapeHtml(x.keterangan||'-')}</td><td>${escapeHtml(x.inputBy||'-')}</td></tr>`).join(''):'<tr><td colspan="9" class="empty">Belum ada history Sales.</td></tr>';}catch(err){toast('History Sales: '+err.message)}}
+async function loadWasteHistory(){if(!state.user)return;try{const r=await apiGet('wasteData',{store:storeApiOfUser(),role:'STORE',userStore:storeApiOfUser(),limit:1000});const rows=r.allRows||[];$('wasteHistoryBody').innerHTML=rows.length?rows.slice().sort((a,b)=>String(b.periodeAkhir||'').localeCompare(String(a.periodeAkhir||''))).map(x=>`<tr><td>${escapeHtml(x.periodeMulai||'-')} s/d ${escapeHtml(x.periodeAkhir||'-')}</td><td>${escapeHtml(x.kode||'-')}</td><td>${escapeHtml(x.namaBarang||'-')}</td><td>${escapeHtml(x.satuan||'-')}</td><td><b>${Number(x.totalWaste||0).toLocaleString('id-ID',{maximumFractionDigits:2})}</b></td><td>${escapeHtml(x.storeName||'-')}</td></tr>`).join(''):'<tr><td colspan="6" class="empty">Belum ada history Waste.</td></tr>';}catch(err){toast('History Waste: '+err.message)}}
+async function loadMaintenanceHistory(){if(!state.user)return;try{const r=await apiGet('history',{module:'maintenance',store:storeApiOfUser(),role:'STORE',limit:1000});const rows=r.data||[];$('maintenanceHistoryBody').innerHTML=rows.length?rows.map(x=>`<tr><td>${escapeHtml(x.tanggalInput||'-')}</td><td><b>${escapeHtml(x.noSC||'-')}</b></td><td>${escapeHtml(x.store||'-')}</td><td>${escapeHtml(x.kategori||'-')}</td><td>${escapeHtml(x.itemAsset||'-')}</td><td>${escapeHtml(x.jenisKerusakan||'-')}</td><td>${escapeHtml(x.prioritas||'-')}</td><td>${statusBadge(x.status)}</td><td>${escapeHtml(x.teknisiVendor||'-')}</td><td>${escapeHtml(x.tanggalSelesai||'-')}</td></tr>`).join(''):'<tr><td colspan="10" class="empty">Belum ada history Maintenance.</td></tr>';}catch(err){toast('History Maintenance: '+err.message)}}
+async function loadKPIHistory(){if(!state.user)return;try{const r=await apiGet('history',{module:'kpi',store:storeApiOfUser(),role:'STORE',limit:1000});const rows=r.data||[];$('kpiHistoryBody').innerHTML=rows.length?rows.map(x=>`<tr><td>${escapeHtml(x.timestamp||'-')}</td><td>${escapeHtml(x.bulan||'-')}</td><td>${escapeHtml(x.tahun||'-')}</td><td>${escapeHtml(x.tanggalUpload||'-')}</td><td>${escapeHtml(x.keterangan||'-')}</td><td>${x.driveUrl?`<a class="btn btn-light" target="_blank" href="${escapeAttr(x.driveUrl)}">Lihat KPI</a>`:escapeHtml(x.fileName||'-')}</td><td>${escapeHtml(x.uploadBy||'-')}</td></tr>`).join(''):'<tr><td colspan="7" class="empty">Belum ada history KPI.</td></tr>';}catch(err){toast('History KPI: '+err.message)}}
+
+/* SALES */
+['salesDineIn','salesDelivery','salesTakeAway','salesConnect','salesTips'].forEach(id=>{
+  $(id).addEventListener('input',updateSalesTotal);
+});
+
+function updateSalesTotal(){
+  const total =
+    num('salesDineIn')+
+    num('salesDelivery')+
+    num('salesTakeAway')+
+    num('salesConnect');
+  $('salesTotal').value=formatRupiah(total);
+}
+
+async function saveSales(){
+  try{
+    const payload={
+      action:'saveSales',
+      tanggal:$('salesDate').value,
+      store:storeApiOfUser(),
+      dineIn:num('salesDineIn'),
+      delivery:num('salesDelivery'),
+      takeAway:num('salesTakeAway'),
+      connectBO:num('salesConnect'),
+      tips:num('salesTips'),
+      keterangan:$('salesNote').value.trim(),
+      inputBy:state.user?.username||''
+    };
+
+    if(isAM()){
+      toast('Input Sales dari akun AM membutuhkan store tujuan. Modul AM multi-store akan kita aktifkan pada versi berikutnya.');
+      return;
+    }
+
+    showLoading(true);
+    const r=await apiPost(payload);
+    toast(`Sales tersimpan. Total ${formatRupiah(r.totalSales)}`);
+    resetSales();
+    await loadSalesHistory();
+    loadDashboard();
+  }catch(err){toast(err.message)}
+  finally{showLoading(false)}
+}
+
+function resetSales(){
+  ['salesDineIn','salesDelivery','salesTakeAway','salesConnect','salesTips','salesNote'].forEach(id=>$(id).value='');
+  updateSalesTotal();
+}
+
+/* WASTE */
+async function saveWaste(){
+  if(isAM()){
+    toast('Form Waste versi V1 digunakan oleh store. Form AM multi-store kita aktifkan pada tahap berikutnya.');
+    return;
+  }
+
+  try{
+    showLoading(true);
+    const file=$('wastePhoto').files[0];
+    const payload={
+      action:'saveWaste',
+      tanggal:$('wasteDate').value,
+      store:storeApiOfUser(),
+      kategori:$('wasteCategory').value.trim(),
+      itemId:$('wasteItemId').value.trim(),
+      namaItem:$('wasteItemName').value.trim(),
+      satuan:$('wasteUnit').value.trim(),
+      qty:num('wasteQty'),
+      alasan:$('wasteReason').value.trim(),
+      keterangan:$('wasteNote').value.trim(),
+      inputBy:state.user?.username||''
+    };
+
+    if(file){
+      payload.photo=await fileToDataURL(file);
+      payload.fileName='WASTE_'+safeName(payload.store)+'_'+Date.now()+'.jpg';
+      payload.mimeType=file.type||'image/jpeg';
+    }
+
+    const r=await apiPost(payload);
+    toast('Waste berhasil disimpan.');
+    resetWaste();
+    loadDashboard();
+  }catch(err){toast(err.message)}
+  finally{showLoading(false)}
+}
+
+function resetWaste(){
+  ['wasteCategory','wasteItemId','wasteItemName','wasteUnit','wasteQty','wasteReason','wasteNote'].forEach(id=>$(id).value='');
+  $('wastePhoto').value='';
+  $('wastePreview').innerHTML='';
+}
+
+/* MAINTENANCE */
+async function saveMaintenance(){
+  if(isAM()){
+    toast('Untuk V1, pembuatan ticket memakai akun store. Fitur AM membuat ticket lintas store kita aktifkan setelah login dasar stabil.');
+    return;
+  }
+
+  const noSC=$('mtNoSC').value.trim();
+  if(!noSC){
+    toast('No SC wajib diisi sesuai sistem perusahaan.');
+    return;
+  }
+
+  try{
+    showLoading(true);
+    const file=$('mtBefore').files[0];
+
+    const payload={
+      action:'saveMaintenance',
+      noSC,
+      tanggalInput:$('mtInputDate').value,
+      tanggalKejadian:$('mtIncidentDate').value,
+      store:storeApiOfUser(),
+      kategori:$('mtCategory').value,
+      itemAsset:$('mtAsset').value.trim(),
+      jenisKerusakan:$('mtDamage').value.trim(),
+      prioritas:$('mtPriority').value,
+      keterangan:$('mtNote').value.trim(),
+      teknisiVendor:$('mtVendor').value.trim(),
+      status:'OPEN',
+      inputBy:state.user?.username||''
+    };
+
+    if(file){
+      payload.fotoBefore=await fileToDataURL(file);
+      payload.fotoBeforeMimeType=file.type||'image/jpeg';
+    }
+
+    const r=await apiPost(payload);
+    toast(`Ticket ${r.noSC} berhasil dibuat.`);
+    clearMaintenanceForm();
+    await loadMaintenanceHistory();
+    loadDashboard();
+  }catch(err){toast(err.message)}
+  finally{showLoading(false)}
+}
+
+async function searchMaintenance(){
+  const noSC=$('searchSC').value.trim();
+  if(!noSC){
+    toast('Masukkan No SC.');
+    return;
+  }
+
+  try{
+    showLoading(true);
+    const r=await apiGet('maintenance',{noSC});
+    const rows=r.data||[];
+
+    if(!rows.length){
+      $('maintenanceResult').innerHTML='<div class="empty">No SC tidak ditemukan.</div>';
+      return;
+    }
+
+    $('maintenanceResult').innerHTML=rows.map(r=>`
+      <div class="card" style="box-shadow:none;background:#fbfcfe;margin-bottom:10px">
+        <div class="card-head">
+          <div>
+            <b>No SC: ${escapeHtml(r.noSC)}</b>
+            <div class="small">${escapeHtml(r.store)} · Input ${escapeHtml(r.tanggalInput||'-')}</div>
+          </div>
+          ${statusBadge(r.status)}
+        </div>
+        <div class="grid">
+          <div>
+            <div class="small">Asset</div><b>${escapeHtml(r.itemAsset||'-')}</b>
+          </div>
+          <div>
+            <div class="small">Kategori</div><b>${escapeHtml(r.kategori||'-')}</b>
+          </div>
+          <div>
+            <div class="small">Kerusakan</div><b>${escapeHtml(r.jenisKerusakan||'-')}</b>
+          </div>
+          <div>
+            <div class="small">Prioritas</div><b>${escapeHtml(r.prioritas||'-')}</b>
+          </div>
+        </div>
+        <div style="margin-top:12px">
+          <div class="small">Keterangan</div>
+          <div>${escapeHtml(r.keterangan||'-')}</div>
+        </div>
+        <div class="actions" style="margin-top:12px">
+          ${r.fotoBefore ? `<a class="btn btn-light" target="_blank" href="${escapeAttr(r.fotoBefore)}">Foto Before</a>`:''}
+          ${r.fotoProgress ? `<a class="btn btn-light" target="_blank" href="${escapeAttr(r.fotoProgress)}">Foto Progress</a>`:''}
+          ${r.fotoAfter ? `<a class="btn btn-green" target="_blank" href="${escapeAttr(r.fotoAfter)}">Foto After</a>`:''}
+        </div>
+      </div>
+    `).join('');
+  }catch(err){toast(err.message)}
+  finally{showLoading(false)}
+}
+
+function clearMaintenanceForm(){
+  ['mtNoSC','mtAsset','mtDamage','mtVendor','mtNote'].forEach(id=>$(id).value='');
+  $('mtBefore').value='';
+  $('mtBeforePreview').innerHTML='';
+  $('mtInputDate').value=todayISO();
+  $('mtIncidentDate').value=todayISO();
+  $('mtPriority').value='MEDIUM';
+}
+
+/* KPI */
+async function saveKPI(){
+  if(isAM()){
+    toast('Upload KPI versi V1 digunakan oleh akun store. AM melihat status upload pada dashboard.');
+    return;
+  }
+
+  const file=$('kpiPhoto').files[0];
+  if(!file){
+    toast('Foto KPI wajib dipilih.');
+    return;
+  }
+
+  try{
+    showLoading(true);
+    const payload={
+      action:'saveKPI',
+      store:storeApiOfUser(),
+      bulan:$('kpiMonth').value,
+      tahun:$('kpiYear').value,
+      keterangan:$('kpiNote').value.trim(),
+      uploadBy:state.user?.username||'',
+      photo:await fileToDataURL(file),
+      fileName:'KPI_'+safeName(storeApiOfUser())+'_'+$('kpiMonth').value+'_'+$('kpiYear').value+'_'+Date.now()+'.jpg',
+      mimeType:file.type||'image/jpeg'
+    };
+
+    const r=await apiPost(payload);
+    toast('KPI berhasil diupload ke Google Drive.');
+    $('kpiPhoto').value='';
+    $('kpiPreview').innerHTML='';
+    $('kpiNote').value='';
+    await loadKPIHistory();
+    loadDashboard();
+  }catch(err){toast(err.message)}
+  finally{showLoading(false)}
+}
+
+/* UTILS */
+function num(id){
+  return Number($(id).value||0)||0;
+}
+
+function previewFile(input,targetId){
+  const file=input.files[0];
+  const target=$(targetId);
+  target.innerHTML='';
+  if(!file) return;
+  const img=document.createElement('img');
+  img.src=URL.createObjectURL(file);
+  target.appendChild(img);
+}
+
+function fileToDataURL(file){
   return new Promise((resolve,reject)=>{
-    if(!file) return reject(new Error('File kosong'));
+    const reader=new FileReader();
+    reader.onload=()=>resolve(reader.result);
+    reader.onerror=reject;
+    reader.readAsDataURL(file);
+  });
+}
 
+function safeName(s){
+  return String(s||'')
+    .toUpperCase()
+    .replace(/[^A-Z0-9]+/g,'_')
+    .replace(/^_+|_+$/g,'');
+}
+
+function escapeHtml(value){
+  return String(value??'')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#039;');
+}
+
+function escapeAttr(value){
+  return escapeHtml(value).replace(/`/g,'&#096;');
+}
+
+
+/* =========================================================
+   WALKTHROUGH
+   SUMBER INPUT = WEBSITE WALKTHROUGH GITHUB
+   CONTROL STORE = VIEW ONLY
+   AM/ADMIN = SEARCH ALL STORE
+   STORE = VIEW STORE SENDIRI
+   ========================================================= */
+
+function initWalkthrough(){
+  const am = isAM();
+  const filter = $('walkthroughStoreFilter');
+
+  if(filter){
+    if(am){
+      filter.innerHTML = `
+        <option value="">ALL STORE</option>
+        <option value="CITYWALK">CITYWALK</option>
+        <option value="CITRA TOWER">CITRA TOWER</option>
+        <option value="MENTENG">MENTENG</option>`;
+      filter.disabled = false;
+    }else{
+      const ownStore = storeOfUser();
+      filter.innerHTML = `<option value="${escapeAttr(ownStore)}">${escapeHtml(ownStore)}</option>`;
+      filter.value = ownStore;
+      filter.disabled = true;
+    }
+  }
+
+  $('walkthroughAccessNote').textContent = am
+    ? 'AM/ADMIN: pilih store untuk melihat hasil Walkthrough. Data input berasal dari website Walkthrough GitHub.'
+    : `STORE: hanya dapat melihat hasil Walkthrough ${storeOfUser()} (VIEW ONLY).`;
+
+  $('walkthroughHeroSub').textContent = am
+    ? 'Seluruh history Walkthrough dari website Walkthrough GitHub. Store hanya dapat melihat temuan dan tindak lanjut.'
+    : `Hasil Walkthrough ${storeOfUser()} — mode lihat saja.`;
+
+  loadWalkthrough();
+}
+
+async function loadWalkthrough(){
+  try{
+    const selectedStore = $('walkthroughStoreFilter')?.value || '';
+
+    const params = {
+      limit: 5000,
+      role: isAM() ? (state.user?.role || 'AM') : 'STORE',
+      userStore: isAM() ? '' : storeApiOfUser(),
+      store: isAM() ? selectedStore : storeApiOfUser()
+    };
+
+    showLoading(true);
+    const r = await apiGet('recentWalkthrough', params);
+    renderWalkthroughList(r.data || []);
+
+    if($('walkthroughDetail')){
+      $('walkthroughDetail').classList.add('hidden');
+      $('walkthroughDetail').innerHTML = '';
+    }
+  }catch(err){
+    $('walkthroughList').innerHTML =
+      `<div class="empty">${escapeHtml(err.message)}</div>`;
+    toast(err.message);
+  }finally{
+    showLoading(false);
+  }
+}
+
+function renderWalkthroughList(rows){
+  if(!rows.length){
+    $('walkthroughList').innerHTML =
+      '<div class="empty">Belum ada temuan Walkthrough.</div>';
+    return;
+  }
+
+  $('walkthroughList').innerHTML = rows.map(function(r){
+    const status = String(r.STATUS || r.status || 'OPEN').toUpperCase();
+    const store = r.STORE || r.store || '-';
+    const id = r.ID || r.id || '';
+    const date = r.TANGGAL || r.tanggal || '-';
+    const area = r.AREA || r.area || '-';
+    const category = r.KATEGORI || r.kategori || '-';
+    const finding = r.TEMUAN || r.temuan || '-';
+    const priority = r.PRIORITAS || r.prioritas || 'MEDIUM';
+    const pic = r.PIC || r.pic || '-';
+    const due = r['DUE DATE'] || r.dueDate || '-';
+
+    return `
+      <div class="walk-card">
+        <div class="walk-card-head">
+          <div>
+            <div class="small">${escapeHtml(id)}</div>
+            <h3 style="margin:4px 0 0">${escapeHtml(store)}</h3>
+          </div>
+          ${statusBadge(status)}
+        </div>
+
+        <div class="walk-meta">
+          <div class="walk-meta-item"><div class="label">TANGGAL</div><b>${escapeHtml(date)}</b></div>
+          <div class="walk-meta-item"><div class="label">AREA</div><b>${escapeHtml(area)}</b></div>
+          <div class="walk-meta-item"><div class="label">KATEGORI</div><b>${escapeHtml(category)}</b></div>
+          <div class="walk-meta-item"><div class="label">PRIORITAS</div><b>${escapeHtml(priority)}</b></div>
+        </div>
+
+        <div class="walk-finding">
+          <div class="small">TEMUAN</div>
+          <div>${escapeHtml(finding)}</div>
+        </div>
+
+        <div class="small" style="margin-top:10px">
+          PIC: <b>${escapeHtml(pic)}</b> · Due Date: <b>${escapeHtml(due)}</b>
+        </div>
+
+        <div class="actions" style="margin-top:12px">
+          <button class="btn btn-primary" onclick="viewWalkthroughDetail('${escapeAttr(id)}')">Lihat Detail</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+async function viewWalkthroughDetail(id){
+  try{
+    showLoading(true);
+    const r = await apiGet('walkthrough',{
+      id:id,
+      role:isAM() ? (state.user?.role || 'AM') : 'STORE',
+      userStore:isAM() ? '' : storeApiOfUser()
+    });
+
+    if(!r.data){
+      throw new Error('Detail temuan tidak ditemukan.');
+    }
+
+    renderWalkthroughDetail(r.data);
+    $('walkthroughDetail').scrollIntoView({behavior:'smooth',block:'start'});
+  }catch(err){
+    toast(err.message);
+  }finally{
+    showLoading(false);
+  }
+}
+
+function renderWalkthroughDetail(r){
+  const id = r.ID || r.id || '';
+  const store = r.STORE || r.store || '-';
+  const date = r.TANGGAL || r.tanggal || '-';
+  const area = r.AREA || r.area || '-';
+  const category = r.KATEGORI || r.kategori || '-';
+  const finding = r.TEMUAN || r.temuan || '-';
+  const priority = r.PRIORITAS || r.prioritas || '-';
+  const actionPlan = r['ACTION PLAN'] || r.actionPlan || '-';
+  const pic = r.PIC || r.pic || '-';
+  const due = r['DUE DATE'] || r.dueDate || '-';
+  const status = r.STATUS || r.status || 'OPEN';
+  const note = r.KETERANGAN || r.keterangan || '-';
+  const before = r['FOTO BEFORE'] || r.fotoBefore || '';
+  const progressDate = r['TANGGAL PROGRESS'] || r.tanggalProgress || '';
+  const progressPhoto = r['FOTO PROGRESS'] || r.fotoProgress || '';
+  const action = r.TINDAKAN || r.tindakan || '';
+  const completeDate = r['TANGGAL SELESAI'] || r.tanggalSelesai || '';
+  const after = r['FOTO AFTER'] || r.fotoAfter || '';
+  const completeNote = r['KETERANGAN SELESAI'] || r.keteranganSelesai || '';
+
+  $('walkthroughDetail').classList.remove('hidden');
+  $('walkthroughDetail').innerHTML = `
+    <div class="card-head">
+      <div>
+        <div class="small">${escapeHtml(id)}</div>
+        <h3 style="margin:4px 0">${escapeHtml(store)} · ${escapeHtml(area)}</h3>
+        <div class="small">${escapeHtml(date)} · ${escapeHtml(category)}</div>
+      </div>
+      ${statusBadge(status)}
+    </div>
+
+    <div class="walk-finding">
+      <div class="small">TEMUAN</div>
+      <div>${escapeHtml(finding)}</div>
+    </div>
+
+    <div class="walk-meta" style="margin-top:12px">
+      <div class="walk-meta-item"><div class="label">PRIORITAS</div><b>${escapeHtml(priority)}</b></div>
+      <div class="walk-meta-item"><div class="label">PIC</div><b>${escapeHtml(pic)}</b></div>
+      <div class="walk-meta-item"><div class="label">DUE DATE</div><b>${escapeHtml(due)}</b></div>
+      <div class="walk-meta-item"><div class="label">STATUS</div><b>${escapeHtml(status)}</b></div>
+    </div>
+
+    <div style="margin-top:14px">
+      <div class="small">ACTION PLAN</div>
+      <div>${escapeHtml(actionPlan)}</div>
+    </div>
+
+    <div style="margin-top:14px">
+      <div class="small">KETERANGAN</div>
+      <div>${escapeHtml(note)}</div>
+    </div>
+
+    <div class="section-title">📷 Dokumentasi</div>
+    <div class="photo-grid">
+      ${photoCard('Before', before)}
+      ${photoCard('Progress', progressPhoto)}
+      ${photoCard('After', after)}
+    </div>
+
+    ${(progressDate || action || completeDate || completeNote) ? `
+      <div class="section-title">🕒 Progress</div>
+      <div class="timeline">
+        ${progressDate || action ? `
+          <div class="timeline-item">
+            <div class="date">${escapeHtml(progressDate || '-')}</div>
+            <b>Progress / Tindakan</b>
+            <div>${escapeHtml(action || '-')}</div>
+          </div>` : ''}
+        ${completeDate || completeNote ? `
+          <div class="timeline-item">
+            <div class="date">${escapeHtml(completeDate || '-')}</div>
+            <b>Penyelesaian</b>
+            <div>${escapeHtml(completeNote || '-')}</div>
+          </div>` : ''}
+      </div>
+    ` : ''}
+
+    
+  `;
+}
+
+function photoCard(label,url){
+  if(!url) return '';
+  return `
+    <div class="photo-box">
+      <img src="${escapeAttr(url)}" alt="${escapeAttr(label)}">
+      <a class="photo-link" href="${escapeAttr(url)}" target="_blank">${escapeHtml(label)} · Buka</a>
+    </div>`;
+}
+
+async function saveWalkthroughFinding(){
+  toast('Input Walkthrough dilakukan melalui website Walkthrough GitHub.');
+  return;
+
+
+  const store = $('wtStore').value;
+  const finding = $('wtFinding').value.trim();
+  const area = $('wtArea').value.trim();
+  const category = $('wtCategory').value.trim();
+  const actionPlan = $('wtActionPlan').value.trim();
+  const pic = $('wtPIC').value.trim();
+
+  if(!store || !finding || !area || !category || !actionPlan || !pic){
+    toast('Store, Area, Kategori, Temuan, Action Plan, dan PIC wajib diisi.');
+    return;
+  }
+
+  try{
+    showLoading(true);
+    const file = $('wtBefore').files[0];
+
+    const payload = {
+      action:'saveWalkthrough',
+      role:state.user?.role || 'AM',
+      store,
+      tanggal:$('wtDate').value || todayISO(),
+      area,
+      kategori:category,
+      temuan:finding,
+      prioritas:$('wtPriority').value,
+      actionPlan,
+      pic,
+      dueDate:$('wtDueDate').value || '',
+      status:$('wtStatus').value,
+      keterangan:$('wtNote').value.trim(),
+      inputBy:state.user?.username || ''
+    };
+
+    if(file){
+      payload.fotoBefore = await fileToDataURL(file);
+      payload.mimeTypeBefore = file.type || 'image/jpeg';
+    }
+
+    const r = await apiPost(payload);
+    toast(`Temuan berhasil disimpan: ${r.id || ''}`);
+    resetWalkthroughForm();
+    await loadWalkthrough();
+  }catch(err){
+    toast(err.message);
+  }finally{
+    showLoading(false);
+  }
+}
+
+async function updateWalkthroughFinding(id){
+  toast('Update Walkthrough dilakukan melalui website Walkthrough GitHub.');
+  return;
+
+
+  try{
+    showLoading(true);
+
+    const progressFile = $('wtUpdProgressPhoto')?.files[0];
+    const afterFile = $('wtUpdAfterPhoto')?.files[0];
+
+    const payload = {
+      action:'updateWalkthrough',
+      role:state.user?.role || 'AM',
+      id,
+      status:$('wtUpdStatus')?.value || 'OPEN',
+      tanggalProgress:$('wtUpdDate')?.value || todayISO(),
+      tindakan:$('wtUpdAction')?.value.trim() || '',
+      keteranganSelesai:$('wtUpdNote')?.value.trim() || '',
+      updateBy:state.user?.username || ''
+    };
+
+    if(progressFile){
+      payload.fotoProgress = await fileToDataURL(progressFile);
+      payload.mimeTypeProgress = progressFile.type || 'image/jpeg';
+    }
+
+    if(afterFile){
+      payload.fotoAfter = await fileToDataURL(afterFile);
+      payload.mimeTypeAfter = afterFile.type || 'image/jpeg';
+    }
+
+    const r = await apiPost(payload);
+    toast('Update Walkthrough berhasil disimpan.');
+    await viewWalkthroughDetail(id);
+    await loadWalkthrough();
+  }catch(err){
+    toast(err.message);
+  }finally{
+    showLoading(false);
+  }
+}
+
+function openWalkthroughUpdate(id){
+  viewWalkthroughDetail(id);
+}
+
+function resetWalkthroughForm(){
+  return;
+}
+
+
+/* =========================================================
+   SMALLWARE
+   STORE = REQUEST + VIEW OWN HISTORY
+   AM/ADMIN = ALL STORE + APPROVAL + STATUS UPDATE
+   ========================================================= */
+
+let smallwareRows = [];
+let smallwareFrequencyRows = [];
+
+function showSmallwareTab(tab){
+  const tabs = ['request','history','frequency'];
+  tabs.forEach(t=>{
+    $('swPanel'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('hidden', t!==tab);
+    $('swTab'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('active', t===tab);
+  });
+
+  $('swDetail').classList.add('hidden');
+
+  if(tab==='history') loadSmallware();
+  if(tab==='frequency') loadSmallwareFrequency();
+}
+
+
+function prepareSmallwareStoreField(){
+  const el = $('swStore');
+  if(!el || !isAM()) return;
+
+  const current = el.value;
+  const select = document.createElement('select');
+  select.id = 'swStore';
+  select.innerHTML = `
+    <option>CITYWALK</option>
+    <option>CITRA TOWER</option>
+    <option>MENTENG</option>
+  `;
+  select.value = ['CITYWALK','CITRA TOWER','MENTENG'].includes(current) ? current : 'CITYWALK';
+  el.replaceWith(select);
+}
+
+function initSmallware(){
+  const am = isAM();
+  if(am){
+    prepareSmallwareStoreField();
+  }else{
+    $('swStore').value = storeOfUser();
+  }
+  $('swDate').value = todayISO();
+
+  $('swHeroSub').textContent = am
+    ? 'Menampilkan request Smallware seluruh store. AM/ADMIN dapat melakukan approval dan update status.'
+    : `Menampilkan request Smallware ${storeOfUser()}. Store hanya dapat membuat request dan melihat history store sendiri.`;
+
+  $('swHistoryNote').textContent = am
+    ? 'AM/ADMIN: seluruh store dapat dilihat dan request PENDING dapat di-APPROVE / REJECT.'
+    : `STORE: hanya history ${storeOfUser()} yang dapat dilihat.`;
+
+  loadSmallware();
+}
+
+async function loadSmallware(){
+  if(!state.user) return;
+
+  try{
+    showLoading(true);
+
+    const result = await apiGet('smallware',{
+      store: isAM() ? '' : storeOfUser(),
+      limit: 1000,
+      role: state.user.role || 'STORE'
+    });
+
+    smallwareRows = result.data || [];
+    renderSmallwareStats();
+    renderSmallwareHistory();
+  }catch(err){
+    toast(err.message);
+  }finally{
+    showLoading(false);
+  }
+}
+
+async function loadSmallwareFrequency(){
+  if(!state.user) return;
+
+  try{
+    showLoading(true);
+
+    const result = await apiGet('smallwareFrequency',{
+      store: isAM() ? '' : storeOfUser(),
+      role: state.user.role || 'STORE'
+    });
+
+    smallwareFrequencyRows = result.data || [];
+    renderSmallwareFrequency();
+  }catch(err){
+    toast(err.message);
+  }finally{
+    showLoading(false);
+  }
+}
+
+function renderSmallwareStats(){
+  const count = status =>
+    smallwareRows.filter(x=>String(x.status||'').toUpperCase()===status).length;
+
+  $('swStatTotal').textContent = smallwareRows.length;
+  $('swStatPending').textContent = count('PENDING');
+  $('swStatApproved').textContent = count('APPROVED');
+  $('swStatCompleted').textContent = count('COMPLETED');
+}
+
+function smallwareStatusBadge(status){
+  const s=String(status||'').toUpperCase();
+  const map={
+    PENDING:'badge-progress',
+    APPROVED:'badge-done',
+    ORDERED:'badge-progress',
+    RECEIVED:'badge-wait',
+    COMPLETED:'badge-done',
+    REJECTED:'badge-open'
+  };
+  return `<span class="badge ${map[s]||'badge-closed'}">${escapeHtml(s||'-')}</span>`;
+}
+
+function renderSmallwareHistory(){
+  const target = $('swHistoryTable');
+  if(!target) return;
+
+  const q = String($('swSearch')?.value||'').trim().toLowerCase();
+  const status = String($('swStatusFilter')?.value||'').toUpperCase();
+
+  const rows = smallwareRows.filter(x=>{
+    const text = [
+      x.idRequest, x.store, x.namaSmallware,
+      x.jenisRequest, x.keterangan, x.status
+    ].join(' ').toLowerCase();
+
+    return (!q || text.includes(q))
+      && (!status || String(x.status||'').toUpperCase()===status);
+  });
+
+  if(!rows.length){
+    target.innerHTML = '<div class="empty">Belum ada request Smallware sesuai filter.</div>';
+    return;
+  }
+
+  target.innerHTML = `
+    <div class="table-wrap">
+      <table style="min-width:980px">
+        <thead>
+          <tr>
+            <th>ID REQUEST</th>
+            <th>TANGGAL</th>
+            <th>STORE</th>
+            <th>SMALLWARE</th>
+            <th>QTY</th>
+            <th>JENIS</th>
+            <th>STATUS</th>
+            <th>AKSI</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.map(row=>{
+            const index = smallwareRows.indexOf(row);
+            return `
+              <tr>
+                <td><b>${escapeHtml(row.idRequest||'-')}</b></td>
+                <td>${escapeHtml(row.tanggalRequest||'-')}</td>
+                <td>${escapeHtml(row.store||'-')}</td>
+                <td>
+                  <b>${escapeHtml(row.namaSmallware||'-')}</b>
+                  ${row.area ? `<br><span class="small">${escapeHtml(row.area)}</span>` : ''}
+                </td>
+                <td>${escapeHtml(row.qtyRequest??'-')}</td>
+                <td>${escapeHtml(row.jenisRequest||'-')}</td>
+                <td>${smallwareStatusBadge(row.status)}</td>
+                <td>
+                  <button class="btn btn-light" onclick="openSmallwareDetail(${index})">Lihat</button>
+                </td>
+              </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+function renderSmallwareFrequency(){
+  const target = $('swFrequencyTable');
+
+  if(!smallwareFrequencyRows.length){
+    target.innerHTML = '<div class="empty">Belum ada histori frequency Smallware.</div>';
+    return;
+  }
+
+  target.innerHTML = `
+    <div class="table-wrap">
+      <table style="min-width:1050px">
+        <thead>
+          <tr>
+            <th>STORE</th>
+            <th>SMALLWARE</th>
+            <th>AREA</th>
+            <th>TOTAL REQUEST</th>
+            <th>TOTAL QTY</th>
+            <th>PENDING</th>
+            <th>APPROVED</th>
+            <th>REJECTED</th>
+            <th>ORDERED</th>
+            <th>RECEIVED</th>
+            <th>COMPLETED</th>
+            <th>REQUEST TERAKHIR</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${smallwareFrequencyRows.map(x=>`
+            <tr>
+              <td>${escapeHtml(x.store||'-')}</td>
+              <td><b>${escapeHtml(x.namaSmallware||'-')}</b></td>
+              <td>${escapeHtml(x.area||'-')}</td>
+              <td><b>${escapeHtml(x.totalRequest??0)}</b></td>
+              <td>${escapeHtml(x.totalQty??0)}</td>
+              <td>${escapeHtml(x.pending??0)}</td>
+              <td>${escapeHtml(x.approved??0)}</td>
+              <td>${escapeHtml(x.rejected??0)}</td>
+              <td>${escapeHtml(x.ordered??0)}</td>
+              <td>${escapeHtml(x.received??0)}</td>
+              <td>${escapeHtml(x.completed??0)}</td>
+              <td>${escapeHtml(x.lastRequest||'-')}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+function openSmallwareDetail(index){
+  const row = smallwareRows[index];
+  if(!row) return;
+
+  const am = isAM();
+  const status = String(row.status||'').toUpperCase();
+
+  $('swDetail').classList.remove('hidden');
+  $('swDetail').innerHTML = `
+    <div class="card-head">
+      <div>
+        <div class="small">${escapeHtml(row.idRequest||'-')}</div>
+        <h3 style="margin:4px 0">${escapeHtml(row.namaSmallware||'-')}</h3>
+        <div class="small">${escapeHtml(row.store||'-')} · ${escapeHtml(row.tanggalRequest||'-')}</div>
+      </div>
+      ${smallwareStatusBadge(status)}
+    </div>
+
+    <div class="walk-meta" style="margin-top:10px">
+      <div class="walk-meta-item"><div class="label">STORE</div><b>${escapeHtml(row.store||'-')}</b></div>
+      <div class="walk-meta-item"><div class="label">QTY</div><b>${escapeHtml(row.qtyRequest??'-')}</b></div>
+      <div class="walk-meta-item"><div class="label">AREA</div><b>${escapeHtml(row.area||'-')}</b></div>
+      <div class="walk-meta-item"><div class="label">JENIS REQUEST</div><b>${escapeHtml(row.jenisRequest||'-')}</b></div>
+    </div>
+
+    <div style="margin-top:14px">
+      <div class="small">KETERANGAN</div>
+      <div>${escapeHtml(row.keterangan||'-')}</div>
+    </div>
+
+    <div style="margin-top:12px" class="grid">
+      <div>
+        <div class="small">INPUT BY</div>
+        <b>${escapeHtml(row.inputBy||'-')}</b>
+      </div>
+      <div>
+        <div class="small">APPROVAL BY</div>
+        <b>${escapeHtml(row.approvalBy||'-')}</b>
+      </div>
+      <div>
+        <div class="small">APPROVAL DATE</div>
+        <b>${escapeHtml(row.approvalDate||'-')}</b>
+      </div>
+      <div>
+        <div class="small">PROCESSING DATE</div>
+        <b>${escapeHtml(row.processingDate||'-')}</b>
+      </div>
+      <div>
+        <div class="small">COMPLETED DATE</div>
+        <b>${escapeHtml(row.completedDate||'-')}</b>
+      </div>
+      <div>
+        <div class="small">APPROVAL NOTE</div>
+        <b>${escapeHtml(row.approvalNote||'-')}</b>
+      </div>
+    </div>
+
+    ${row.fotoKerusakan ? `
+      <div style="margin-top:15px">
+        <div class="small">FOTO KERUSAKAN</div>
+        <div class="photo-grid">
+          <div class="photo-box">
+            <img src="${escapeAttr(row.fotoKerusakan)}" alt="Foto kerusakan">
+            <a class="photo-link" href="${escapeAttr(row.fotoKerusakan)}" target="_blank">Buka Foto</a>
+          </div>
+        </div>
+      </div>` : ''}
+
+    ${am ? renderSmallwareAdminActions(row) : ''}
+  `;
+
+  $('swDetail').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function renderSmallwareAdminActions(row){
+  const s = String(row.status||'').toUpperCase();
+
+  let html = `
+    <div class="section-title">⚙️ Approval / Processing</div>
+    <div class="actions">
+  `;
+
+  if(s==='PENDING'){
+    html += `
+      <button class="btn btn-green" onclick="approveSmallwareUI('${escapeAttr(row.idRequest)}')">✓ APPROVE</button>
+      <button class="btn btn-danger" onclick="rejectSmallwareUI('${escapeAttr(row.idRequest)}')">✕ REJECT</button>`;
+  }
+
+  if(['APPROVED','ORDERED','RECEIVED'].includes(s)){
+    const next = s==='APPROVED' ? 'ORDERED' : s==='ORDERED' ? 'RECEIVED' : 'COMPLETED';
+    html += `
+      <button class="btn btn-primary" onclick="updateSmallwareStatusUI('${escapeAttr(row.idRequest)}','${next}')">
+        Ubah → ${next}
+      </button>`;
+  }
+
+  if(!['PENDING','APPROVED','ORDERED','RECEIVED'].includes(s)){
+    html += '<span class="small">Tidak ada tindakan proses yang tersedia.</span>';
+  }
+
+  html += '</div>';
+  return html;
+}
+
+async function saveSmallwareRequestUI(){
+  if(!state.user) return;
+
+  const name = $('swName').value.trim();
+  const qty = Number($('swQty').value||0);
+  const type = $('swType').value;
+  const file = $('swPhoto').files[0];
+
+  if(!name){
+    toast('Nama Smallware wajib diisi.');
+    return;
+  }
+  if(!qty || qty<=0){
+    toast('Qty request harus lebih dari 0.');
+    return;
+  }
+  if(!type){
+    toast('Jenis request wajib dipilih.');
+    return;
+  }
+
+  const needsPhoto =
+    type==='REPLACEMENT - RUSAK' ||
+    type==='REPLACEMENT - PECAH';
+
+  if(needsPhoto && !file){
+    toast('Foto Smallware rusak/pecah wajib diupload.');
+    return;
+  }
+
+  try{
+    showLoading(true);
+
+    let photo = '';
+    let mimeType = 'image/jpeg';
+
+    if(file){
+      const compressed = await compressSmallwareImage(file);
+      photo = compressed.base64;
+      mimeType = compressed.mimeType;
+    }
+
+    const result = await apiPost({
+      action:'saveSmallwareRequest',
+      role:state.user.role || 'STORE',
+      store:isAM() ? $('swStore').value : storeApiOfUser(),
+      userStore:storeApiOfUser(),
+      tanggalRequest:$('swDate').value || todayISO(),
+      namaSmallware:name,
+      qtyRequest:qty,
+      jenisRequest:type,
+      fotoKerusakan:photo,
+      mimeType:mimeType,
+      keterangan:$('swNote').value.trim(),
+      inputBy:state.user.nama || state.user.username || ''
+    });
+
+    toast(`Request berhasil dibuat: ${result.idRequest||''}`);
+    resetSmallwareForm();
+    showSmallwareTab('history');
+    await loadSmallware();
+    await loadSmallwareFrequency();
+  }catch(err){
+    toast(err.message);
+  }finally{
+    showLoading(false);
+  }
+}
+
+async function approveSmallwareUI(id){
+  const note = prompt('Catatan approval (opsional):','');
+  if(note===null) return;
+
+  try{
+    showLoading(true);
+    await apiPost({
+      action:'approveSmallwareRequest',
+      idRequest:id,
+      role:state.user.role,
+      approvalBy:state.user.nama || state.user.username || '',
+      approvalNote:note
+    });
+    toast('Request berhasil APPROVED.');
+    $('swDetail').classList.add('hidden');
+    await loadSmallware();
+    await loadSmallwareFrequency();
+  }catch(err){
+    toast(err.message);
+  }finally{
+    showLoading(false);
+  }
+}
+
+async function rejectSmallwareUI(id){
+  const note = prompt('Alasan REJECT wajib diisi:','');
+  if(note===null) return;
+  if(!note.trim()){
+    toast('Alasan reject wajib diisi.');
+    return;
+  }
+
+  try{
+    showLoading(true);
+    await apiPost({
+      action:'rejectSmallwareRequest',
+      idRequest:id,
+      role:state.user.role,
+      approvalBy:state.user.nama || state.user.username || '',
+      approvalNote:note
+    });
+    toast('Request berhasil REJECTED.');
+    $('swDetail').classList.add('hidden');
+    await loadSmallware();
+    await loadSmallwareFrequency();
+  }catch(err){
+    toast(err.message);
+  }finally{
+    showLoading(false);
+  }
+}
+
+async function updateSmallwareStatusUI(id,status){
+  if(!confirm(`Ubah status menjadi ${status}?`)) return;
+
+  try{
+    showLoading(true);
+    await apiPost({
+      action:'updateSmallwareStatus',
+      idRequest:id,
+      role:state.user.role,
+      status,
+      updateBy:state.user.nama || state.user.username || ''
+    });
+    toast(`Status berhasil diubah menjadi ${status}.`);
+    $('swDetail').classList.add('hidden');
+    await loadSmallware();
+    await loadSmallwareFrequency();
+  }catch(err){
+    toast(err.message);
+  }finally{
+    showLoading(false);
+  }
+}
+
+function resetSmallwareForm(){
+  $('swDate').value=todayISO();
+  $('swName').value='';
+  $('swQty').value='';
+  $('swType').value='';
+  $('swPhoto').value='';
+  $('swPhotoPreview').innerHTML='';
+  $('swNote').value='';
+  toggleSmallwarePhoto();
+}
+
+function toggleSmallwarePhoto(){
+  const type = $('swType').value;
+  const required =
+    type==='REPLACEMENT - RUSAK' ||
+    type==='REPLACEMENT - PECAH';
+
+  $('swPhotoMark').style.visibility = required ? 'visible' : 'hidden';
+  $('swPhotoHelp').textContent = required
+    ? 'Foto wajib untuk Replacement - Rusak / Pecah.'
+    : 'Foto wajib untuk Rusak / Pecah. Untuk jenis lain opsional.';
+}
+
+function compressSmallwareImage(file){
+  return new Promise((resolve,reject)=>{
     const reader = new FileReader();
 
     reader.onload = ()=>{
       const img = new Image();
 
       img.onload = ()=>{
-        let width = img.naturalWidth || img.width;
-        let height = img.naturalHeight || img.height;
-
-        if(!width || !height) return reject(new Error('Foto tidak valid'));
-
-        const ratio = Math.min(1, maxW / width);
-        width = Math.round(width * ratio);
-        height = Math.round(height * ratio);
-
+        const max = 1200;
+        const scale = Math.min(1,max/Math.max(img.width,img.height));
         const canvas = document.createElement('canvas');
-        canvas.width = width;
-        canvas.height = height;
 
-        const ctx = canvas.getContext('2d', {alpha:false});
-        ctx.drawImage(img, 0, 0, width, height);
+        canvas.width = Math.max(1,Math.round(img.width*scale));
+        canvas.height = Math.max(1,Math.round(img.height*scale));
 
-        // JPEG is much smaller than the original camera file and is safer for
-        // browser localStorage while retaining enough quality for the report.
-        const data = canvas.toDataURL('image/jpeg', quality);
-        resolve(data);
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img,0,0,canvas.width,canvas.height);
+
+        resolve({
+          base64:canvas.toDataURL('image/jpeg',0.78),
+          mimeType:'image/jpeg'
+        });
       };
 
-      img.onerror = ()=>reject(new Error('Foto tidak dapat dibaca'));
+      img.onerror = reject;
       img.src = reader.result;
     };
 
-    reader.onerror = ()=>reject(new Error('Gagal membaca foto'));
+    reader.onerror = reject;
     reader.readAsDataURL(file);
   });
 }
 
-function chooseFindingPhoto(id, type='finding'){
-  const input = document.getElementById(`finding-file-${id}`);
-  if(input) input.click();
-}
 
-function handleFindingPhoto(id, type='finding', input){
-  const file = input && input.files ? input.files[0] : null;
-  if(!file) return;
-
-  resizeImage(file, 1000, .72).then(data=>{
-    if(!active) return;
-
-    const f = active.findings.find(x => x.id === id);
-    if(!f) return;
-
-    f.photo = data;
-    f.updatedAt = new Date().toISOString();
-
-    syncActive();
-    persist();
-    renderEditor();
-
-    setTimeout(()=>{
-      const el = document.getElementById(`finding-${id}`);
-      if(el) el.scrollIntoView({behavior:'smooth', block:'center'});
-    }, 80);
-
-    toast('Foto temuan tersimpan');
-  }).catch(()=>{
-    toast('Foto gagal diproses');
-  });
-}
-
-function clearFindingPhoto(id, type='finding'){
-  if(!active) return;
-
-  const f = active.findings.find(x => x.id === id);
-  if(!f) return;
-
-  f.photo = null;
-  f.updatedAt = new Date().toISOString();
-
-  syncActive();
-  persist();
-  renderEditor();
-  toast('Foto temuan dihapus');
-}
-
-function syncActive(){
- const i=reports.findIndex(x=>x.id===active.id);if(i>=0)reports[i]=active;
-}
-function finishReport(){
- if(!active.findings.length)return toast('Tambahkan minimal 1 temuan');
- if(!active.findings.every(f=>f.desc.trim()))return toast('Lengkapi keterangan temuan');
- if(!confirm('Tandai walkthrough ini sebagai SELESAI?'))return;
- active.status='SELESAI';active.finishedAt=new Date().toISOString();syncActive();persist();renderEditor();toast('Walkthrough selesai');
-}
-function saveAndHome(){syncActive();persist();goHome();toast('Draft tersimpan')}
-function goHome(){
- active=null;document.getElementById('editorView').classList.add('hidden');document.getElementById('homeView').classList.remove('hidden');switchTab('history');
-}
-function renderHistory(){
- const p=document.getElementById('historyPanel');
- if(!reports.length){p.innerHTML='<div class="card empty"><div class="emoji">📂</div><b>Belum ada laporan</b></div>';return}
- p.innerHTML=reports.map(r=>`
- <div class="card">
-  <div style="display:flex;justify-content:space-between;gap:10px">
-   <div><b>${esc(r.store)}</b><div class="muted">${esc(r.area)} • ${formatDate(r.date)}</div></div>
-   <span class="badge ${r.status==='SELESAI'?'badge-done':'badge-draft'}">${r.status}</span>
-  </div>
-  <div class="muted" style="margin-top:8px">${r.findings.length} temuan</div>
-  <div class="actions" style="margin-top:10px">
-   <button class="btn btn-light" onclick="openReport('${r.id}')">Buka</button>
-   ${r.status==='SELESAI'?`<button class="btn btn-blue" onclick="previewReportById('${r.id}')">Preview</button><button class="btn btn-green" onclick="exportReportById('${r.id}')">Word</button>`:''}
-   <button class="btn btn-red" onclick="deleteReport('${r.id}')">Hapus</button>
-  </div>
- </div>`).join('');
-}
-function openReport(id){active=reports.find(x=>x.id===id);if(active)openEditor()}
-function deleteReport(id){
- if(!confirm('Hapus laporan ini permanen?'))return;
- reports=reports.filter(x=>x.id!==id);persist();renderHistory();toast('Laporan dihapus');
-}
-function showHistory(){switchTab('history');window.scrollTo({top:0,behavior:'smooth'})}
-
-function formatDate(s){
- if(!s)return '-';const d=new Date(s+'T00:00:00');
- return d.toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'});
-}
-function formatTime(s){
- try{return new Date(s).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})}catch(e){return''}
-}
-function esc(s){
- return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
-}
-function safeAttr(s){return String(s||'').replace(/"/g,'&quot;')}
-
-
-function openFindingsPreview(){
-  if(!active){
-    toast('Tidak ada walkthrough aktif');
-    return;
-  }
-
-  const box = document.getElementById('findingsPreviewContent');
-
-  if(!active.findings.length){
-    box.innerHTML = `<div class="card empty">
-      <div class="emoji">📋</div>
-      <b>Belum ada temuan</b>
-      <div class="muted">Tambahkan temuan terlebih dahulu.</div>
-    </div>`;
-  }else{
-    box.innerHTML = active.findings.map((f,i)=>`
-      <div class="preview-finding">
-        <div class="preview-finding-head">
-          <b>TEMUAN #${i+1}</b>
-          <span>${f.desc ? '✓ Keterangan terisi' : '⚠ Belum ada keterangan'}</span>
-        </div>
-
-        <div class="preview-photo-grid">
-          <div>
-            <div class="preview-label">FOTO TEMUAN</div>
-            ${f.photo
-              ? `<img src="${f.photo}" alt="Foto temuan">`
-              : `<div class="preview-no-photo">📷 Belum ada foto</div>`}
-          </div>
-        </div>
-
-        <div class="preview-text-grid">
-          <div>
-            <b>Keterangan Temuan</b>
-            <p>${esc(f.desc || 'Belum diisi')}</p>
-          </div>
-          <div>
-            <b>Keterangan Hasil / Tindakan</b>
-            <p>${esc(f.resultDesc || 'Belum diisi')}</p>
-          </div>
-        </div>
-      </div>
-    `).join('');
-  }
-
-  document.getElementById('findingsPreviewModal').classList.remove('hidden');
-}
-
-function closeFindingsPreview(){
-  document.getElementById('findingsPreviewModal').classList.add('hidden');
-}
-
-function buildWordHTML(r){
- const items=r.findings.map((f,i)=>`
-  <div class="word-item">
-   <div class="word-item-title">TEMUAN #${i+1}</div>
-   <table class="word-two-col">
-    <tr>
-     <td class="word-photo-cell">${f.photo?`<img src="${f.photo}" alt="Foto temuan">`:'<span>Tidak ada foto</span>'}</td>
-     <td class="word-text-cell"><b>KETERANGAN TEMUAN</b><div>${esc(f.desc||'-')}</div></td>
-    </tr>
-   </table>
-   <table class="word-two-col word-result-table">
-    <tr>
-     <td class="word-text-cell" colspan="2"><b>KETERANGAN HASIL / TINDAKAN</b><div>${esc(f.resultDesc||'-')}</div></td>
-    </tr>
-   </table>
-  </div>`).join('');
- return `<div class="report-doc">
-   <h1>WALKTHROUGH REPORT</h1>
-   <div class="subtitle">WT AM Area Renaldi • Walkthrough Control</div>
-   <table class="word-info">
-    <tr><td>STORE</td><td>${esc(r.store)}</td><td>AREA</td><td>${esc(r.area)}</td></tr>
-    <tr><td>TANGGAL</td><td colspan="3">${formatDate(r.date)}</td></tr>
-   </table>
-   <div class="report-count">TOTAL TEMUAN: ${r.findings.length}</div>
-   ${items}
-   <div class="footer-note">WT AM Area Renaldi • Walkthrough Control</div>
- </div>`;
-}
-
-function openPreview(){
- if(!active)return;
- document.getElementById('wordPreview').innerHTML=buildWordHTML(active);
- document.getElementById('previewModal').classList.remove('hidden');
-}
-function previewReportById(id){active=reports.find(x=>x.id===id);openPreview()}
-function closePreview(){document.getElementById('previewModal').classList.add('hidden')}
-function exportWord(){
- if(!active)return;
- if(active.status!=='SELESAI')return toast('Selesaikan walkthrough terlebih dahulu');
- downloadWord(active);
-}
-function exportReportById(id){const r=reports.find(x=>x.id===id);if(r)downloadWord(r)}
-function exportLatest(){
-  const r=reports.find(x=>x.status==='SELESAI') || reports.find(x=>x.status==='DRAFT');
-  if(!r)return toast('Belum ada laporan untuk di-export');
-  if(r.status!=='SELESAI')return toast('Selesaikan walkthrough terlebih dahulu');
-  downloadWord(r);
-}
-function downloadWord(r){
- if(!r || !r.findings || !r.findings.length)return toast('Belum ada temuan');
- const items=r.findings.map((f,i)=>`
-  <table class="item" cellspacing="0" cellpadding="0">
-   <tr><td class="itemtitle" colspan="2">TEMUAN #${i+1}</td></tr>
-   <tr>
-    <td class="photo"><div class="photo-caption">FOTO TEMUAN</div>${f.photo?`<img src="${f.photo}" width="240" style="max-width:240px;max-height:190px;">`:'<div class="no-photo">Tidak ada foto</div>'}</td>
-    <td class="txt"><b>KETERANGAN TEMUAN</b><br><div>${esc(f.desc||'-')}</div></td>
-   </tr>
-   <tr><td colspan="2" class="sectionbar">HASIL / TINDAKAN</td></tr>
-   <tr>
-    <td class="txt" colspan="2"><b>KETERANGAN HASIL / TINDAKAN</b><br><div>${esc(f.resultDesc||'-')}</div></td>
-   </tr>
-  </table>`).join('');
-
- const htmlDoc=`<!DOCTYPE html><html><head><meta charset="UTF-8">
- <title>Walkthrough ${esc(r.store)} ${esc(r.date)}</title>
- <style>
- @page{size:A4;margin:18mm}
- body{font-family:Arial,Helvetica,sans-serif;color:#111;font-size:10pt;margin:0}
- h1{text-align:center;font-size:20pt;margin:0 0 4pt;color:#111827}
- .subtitle{text-align:center;font-size:9pt;color:#64748b;margin-bottom:14pt}
- .info{border-collapse:collapse;width:100%;margin-bottom:10pt}
- .info td{border:1px solid #555;padding:7pt}
- .info .label{font-weight:bold;background:#f1f5f9;width:14%}
- .count{font-weight:bold;font-size:9pt;margin:7pt 0 12pt}
- .item{border-collapse:collapse;width:100%;margin:0 0 16pt;page-break-inside:avoid}
- .item td{border:1px solid #666;vertical-align:middle}
- .itemtitle{font-weight:bold;background:#e5e7eb;padding:7pt;font-size:10pt}
- .photo{width:40%;text-align:center;padding:8pt;height:145pt}
- .photo img{display:block;margin:5pt auto;object-fit:contain}
- .photo-caption{font-size:8pt;font-weight:bold;color:#475569;margin-bottom:4pt}
- .no-photo{color:#777;font-size:9pt;padding:30pt 5pt}
- .txt{width:60%;padding:10pt;font-size:9.5pt;line-height:1.5;vertical-align:top}
- .txt b{font-size:8.5pt;color:#334155}
- .sectionbar{background:#f1f5f9;padding:5pt;font-size:8.5pt;font-weight:bold;text-align:left}
- .footer{text-align:center;color:#777;font-size:8pt;margin-top:15pt}
- </style></head><body>
- <h1>WALKTHROUGH REPORT</h1>
- <div class="subtitle">WT AM Area Renaldi • Walkthrough Control</div>
- <table class="info">
-  <tr><td class="label">STORE</td><td>${esc(r.store)}</td><td class="label">AREA</td><td>${esc(r.area)}</td></tr>
-  <tr><td class="label">TANGGAL</td><td colspan="3">${formatDate(r.date)}</td></tr>
- </table>
- <div class="count">TOTAL TEMUAN: ${r.findings.length}</div>
- ${items}
- <div class="footer">WT AM Area Renaldi • Walkthrough Control</div>
- </body></html>`;
-
- const blob=new Blob(['\ufeff',htmlDoc],{type:'application/msword'});
- const a=document.createElement('a');
- a.href=URL.createObjectURL(blob);
- const safe=(r.store+'_'+r.date).replace(/[^a-z0-9_-]+/gi,'_');
- a.download=`WT_AM_Walkthrough_${safe}.doc`;
- document.body.appendChild(a);a.click();a.remove();
- setTimeout(()=>URL.revokeObjectURL(a.href),1000);
- toast('File Word dibuat');
-}
-
-// Close preview modals when tapping backdrop
-document.getElementById('previewModal').addEventListener('click',e=>{if(e.target.id==='previewModal')closePreview()});
-document.getElementById('findingsPreviewModal').addEventListener('click',e=>{if(e.target.id==='findingsPreviewModal')closeFindingsPreview()});
-
-// Auto save active draft periodically
-setInterval(()=>{if(active){syncActive();persist()}},15000);
+/* AUTO RESTORE LOGIN */
+(function(){
+  try{
+    const saved=sessionStorage.getItem('WT_AM_USER');
+    if(saved){
+      state.user=JSON.parse(saved);
+      $('loginView').classList.add('hidden');
+      $('appView').classList.remove('hidden');
+      initAfterLogin();
+    }
+  }catch(e){}
+})();
 </script>
 </body>
 </html>
-
